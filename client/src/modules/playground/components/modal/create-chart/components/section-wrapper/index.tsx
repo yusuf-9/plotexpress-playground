@@ -1,6 +1,6 @@
-import { Button } from "@/client/common/components/ui/button";
-import { TabsContent } from "@/client/common/components/ui/tabs";
-import { cn } from "@/client/common/utils";
+import { Button } from "@/common/components/ui/button";
+import { TabsContent } from "@/common/components/ui/tabs";
+import { cn } from "@/common/utils";
 import { ChartPie, ChevronLeft, ChevronRight } from "lucide-react";
 import { memo, useState } from "react";
 

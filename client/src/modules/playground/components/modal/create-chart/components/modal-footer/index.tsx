@@ -1,5 +1,5 @@
-import { Button } from "@/client/common/components/ui/button";
-import React, { memo } from "react";
+import { memo } from "react";
+import { Button } from "@/common/components/ui/button";
 
 type Props = {
   onNext: () => void;

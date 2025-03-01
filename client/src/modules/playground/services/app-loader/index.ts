@@ -1,5 +1,3 @@
-"use client";
-
 import { StoreApi, UseBoundStore } from "zustand";
 
 import IndexedDBService from "../indexed-db";

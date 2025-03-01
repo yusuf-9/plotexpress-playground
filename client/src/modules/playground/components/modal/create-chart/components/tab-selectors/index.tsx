@@ -1,7 +1,7 @@
-import { TabsList, TabsTrigger } from "@/client/common/components/ui/tabs";
-import React, { memo } from "react";
+import { TabsList, TabsTrigger } from "@/common/components/ui/tabs";
+import { memo } from "react";
 import { STEPS } from "../../constants";
-import { cn } from "@/client/common/utils";
+import { cn } from "@/common/utils";
 
 type Props = {
   currentStep: number;

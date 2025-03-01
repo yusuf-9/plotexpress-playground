@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 // components
 import { Dialog, DialogContent } from "@/common/components/ui/dialog";

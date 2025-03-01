@@ -1,9 +1,8 @@
-import React, { memo } from "react";
-import { DialogDescription, DialogHeader, DialogTitle } from "@/client/common/components/ui/dialog";
+import { memo } from "react";
+import { DialogDescription, DialogHeader, DialogTitle } from "@/common/components/ui/dialog";
 
-type Props = {};
 
-const DataModalHeader = (props: Props) => {
+const DataModalHeader = () => {
   return (
     <DialogHeader className="px-6 py-4 bg-gray-50">
       <DialogTitle>Create a New Chart</DialogTitle>

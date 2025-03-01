@@ -171,7 +171,7 @@ export default function useCreateChartFlow(props: Props) {
 
       return {
         ...prev,
-        tracesConfig: prev.tracesConfig.filter((trace, index) => {
+        tracesConfig: prev.tracesConfig.filter((_, index) => {
           return traceIndex !== index;
         }),
       };

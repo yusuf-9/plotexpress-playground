@@ -1,5 +1,3 @@
-"use client"
-
 import { INDEXED_DB_STORES } from "../../constants";
 
 export default class IndexedDBService {

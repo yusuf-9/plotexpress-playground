@@ -1,4 +1,4 @@
-import { Upload, PieChart, Save, Share2, Download } from "lucide-react";
+import { Upload, PieChart, Save } from "lucide-react";
 
 export const SECTIONS = {
   DATA: "data",

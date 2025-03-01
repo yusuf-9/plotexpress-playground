@@ -1,6 +1,4 @@
-"use client";
-
-import React, { createContext, PropsWithChildren, useContext, useMemo } from "react";
+import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 // services
 import AppLoader from "../services/app-loader";

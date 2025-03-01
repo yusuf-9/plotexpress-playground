@@ -1,5 +1,3 @@
-"use client";
-
 import { BarChart3 } from "lucide-react";
 
 // components
