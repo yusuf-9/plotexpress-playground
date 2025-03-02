@@ -19,7 +19,7 @@ const DataModalFooter = (props: Props) => {
       </Button>
       <Button
         disabled={disableSave}
-        className="bg-[#0f9d58] text-white hover:bg-[#0b8043]"
+        variant="default"
         onClick={() => onSave()}
       >
         Save

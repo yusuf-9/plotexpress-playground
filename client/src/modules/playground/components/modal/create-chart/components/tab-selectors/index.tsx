@@ -30,14 +30,14 @@ const TabSelectors = (props: Props) => {
             <span
               className={cn(
                 `mr-2 w-6 h-6 rounded-full ${
-                  step.value <= currentStep ? "bg-[#0f9d58] text-white" : "bg-gray-300 text-gray-600"
+                  step.value <= currentStep ? "bg-[#0f9d58] text-background" : "bg-gray-300 text-accent-foreground"
                 } flex items-center justify-center text-sm`,
-                isStepActive && "!bg-white !text-main border border-main rounded-full"
+                isStepActive && "!bg-background !text-primary border border-primary rounded-full"
               )}
             >
               {step.value}
             </span>
-            <span className={step.value <= currentStep ? "text-[#0f9d58]" : "text-gray-400"}>{step.label}</span>
+            <span className={step.value <= currentStep ? "text-[#0f9d58]" : "text-muted-foreground"}>{step.label}</span>
           </TabsTrigger>
         );
       })}

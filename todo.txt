@@ -1,0 +1,7 @@
+- Fix dark theme
+- integrate with local server for testing files and chart storage in indexedDB
+- Create backend infra for parsing files
+- deploy backend infra
+- add new chart types and missing plotting features
+- create help overlays
+- deploys

@@ -69,7 +69,7 @@ export default function useDataSelection(props: Props) {
     return columnKeys.map((key: string) => ({
       field: key,
       cellClass: () => {
-        if (key === hoveredColumn) return "cursor-pointer bg-main/10";
+        if (key === hoveredColumn) return "cursor-pointer bg-primary/10";
 
         const tracesOfColumn = allTraces.find(trace => {
           return (
@@ -81,7 +81,7 @@ export default function useDataSelection(props: Props) {
         return "cursor-pointer";
       },
       headerClass: () => {
-        if (key === hoveredColumn) return "bg-main/10 hover:!bg-main/10 cursor-pointer";
+        if (key === hoveredColumn) return "bg-primary/10 hover:!bg-primary/10 cursor-pointer";
 
         const tracesOfColumn = allTraces.find(trace => {
           return (
@@ -90,7 +90,7 @@ export default function useDataSelection(props: Props) {
           );
         });
         if (tracesOfColumn)
-          return `cursor-pointer hover:!bg-main bg-hex-${tracesOfColumn.settings.color?.replace("#", "")}/10`;
+          return `cursor-pointer hover:!bg-primary bg-hex-${tracesOfColumn.settings.color?.replace("#", "")}/10`;
         return "cursor-pointer";
       },
     }));

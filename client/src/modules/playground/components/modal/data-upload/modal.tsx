@@ -43,7 +43,7 @@ export default function DataUploadModal(props: Props) {
       }}
     >
       <DialogContent
-        className="w-[80vw] max-w-[1000px] h-[80vh] max-h-[800px] p-0"
+        className="!w-[80vw] !max-w-[1000px] h-[80vh] max-h-[800px] p-0"
         aria-describedby="data upload modal"
       >
         <div className="h-full flex flex-col">

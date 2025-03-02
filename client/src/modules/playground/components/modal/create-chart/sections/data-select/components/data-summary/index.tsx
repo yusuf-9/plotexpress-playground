@@ -50,7 +50,7 @@ const DataSummary = (props: Props) => {
       return (
         <>
           <h3 className="text-lg font-semibold mb-0">Traces</h3>
-          <p className="text-sm text-gray-600">Your selections will appear here</p>
+          <p className="text-sm text-accent-foreground">Your selections will appear here</p>
         </>
       );
     }
@@ -60,7 +60,7 @@ const DataSummary = (props: Props) => {
         key={index}
         className={cn(
           "flex flex-col bg-gray-50 p-3 rounded-lg border",
-          index === selectedTraceIndex ? "border-main" : ""
+          index === selectedTraceIndex ? "border-primary" : ""
         )}
       >
         <div className="flex items-center justify-between mb-2">
@@ -108,18 +108,18 @@ const DataSummary = (props: Props) => {
           </div>
         </div>
         {traceConfig?.x && (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-accent-foreground">
             <span className="font-semibold">X: </span>
-            <span className="text-main">
+            <span className="text-primary">
               {uploadedFiles[traceConfig?.x?.fileId ?? ""]?.name?.slice(0, 10) + "..."} :{" "}
             </span>
             <span style={{ color: traceConfig.settings.color }}>{traceConfig?.x?.column}</span>
           </div>
         )}
         {traceConfig?.y && (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-accent-foreground">
             <span className="font-semibold">Y: </span>
-            <span className="text-main">
+            <span className="text-primary">
               {uploadedFiles[traceConfig?.y?.fileId ?? ""]?.name?.slice(0, 10) + "..."} :{" "}
             </span>
             <span style={{ color: traceConfig.settings.color }}>{traceConfig?.y?.column}</span>
@@ -130,7 +130,7 @@ const DataSummary = (props: Props) => {
   }, [onTraceDelete, onTraceEdit, debouncedOnTraceSettingsItemEdit, selectedTraceIndex, traces, uploadedFiles]);
 
   return (
-    <div className="h-[135px] flex bg-white border-b-2 rounded-lg rounded-b-none">
+    <div className="h-[135px] flex bg-background border-b-2 rounded-lg rounded-b-none">
       <div className={cn("w-3/4 p-2 h-auto overflow-y-auto", traces.length && "grid grid-cols-1 gap-2 md:grid-cols-2")}>
         {tracesJsx}
       </div>
@@ -155,7 +155,7 @@ const DataSummary = (props: Props) => {
         <div>
           <label
             htmlFor="algorithm-select"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground mb-1"
           >
             Auto Selection Algorithm
           </label>

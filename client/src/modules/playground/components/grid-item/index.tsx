@@ -17,9 +17,9 @@ type Props = PropsWithChildren & {
 const GridItem = (props: Props) => {
   const { children, onDelete, onEdit, title } = props;
   return (
-    <div className="h-full w-full relative bg-white rounded-lg pt-3 p-4 pr-2 flex flex-col shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="h-full w-full relative bg-background rounded-lg pt-3 p-4 pr-2 flex flex-col shadow-md hover:shadow-lg transition-shadow duration-300">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
         <div className="flex items-center">
           <Move className="mr-2 h-4 w-4 cursor-grab draggable-region" />
           <DropdownMenu>

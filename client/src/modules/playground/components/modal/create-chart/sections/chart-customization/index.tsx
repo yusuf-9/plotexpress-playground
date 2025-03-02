@@ -42,7 +42,7 @@ const ChartCustomizationSection = (props: Props) => {
     <>
       <div className="flex flex-col space-y-1 border-b-2 rounded-lg rounded-b-none p-4">
         <h3 className="text-lg font-semibold mb-0">Customize Your Chart</h3>
-        <p className="text-sm text-gray-600">Customize your chart with the options below.</p>
+        <p className="text-sm text-accent-foreground">Customize your chart with the options below.</p>
       </div>
       <div className="flex-grow flex items-stretch overflow-hidden">
         <ul className="flex flex-col w-[200px] border-r-2">
@@ -52,7 +52,7 @@ const ChartCustomizationSection = (props: Props) => {
               key={category.value}
               className={cn(
                 "px-4 py-3 border-b-2 cursor-pointer hover:bg-gray-100",
-                category.value === selectedSettingsCategory.value ? "bg-main-light hover:!bg-main/20" : ""
+                category.value === selectedSettingsCategory.value ? "bg-primary-light hover:!bg-primary/20" : ""
               )}
             >
               {category.title}

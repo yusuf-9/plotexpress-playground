@@ -19,7 +19,7 @@ const ChartSelectSection = (props: Props) => {
       value={tabValue}
       className="flex-grow flex flex-col p-6 overflow-y-auto"
     >
-      <h2 className="text-3xl font-medium text-gray-800 my-8 text-center tracking-normal">Select Chart Type</h2>
+      <h2 className="text-3xl font-medium text-foreground my-8 text-center tracking-normal">Select Chart Type</h2>
       <div className="flex-grow w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 pt-20">
         {chartTypes.map(chart => (
           <Button
@@ -31,8 +31,8 @@ const ChartSelectSection = (props: Props) => {
             )}
             onClick={() => onChartSelect(chart.key)}
           >
-            <chart.icon className="h-16 w-16 mb-2 text-main" />
-            <span className="font-medium text-2xl">{chart.label}</span>
+            <chart.icon className="!h-16 !w-16 mb-2 text-primary" />
+            <span className="font-medium text-2xl text-foreground">{chart.label}</span>
           </Button>
         ))}
       </div>

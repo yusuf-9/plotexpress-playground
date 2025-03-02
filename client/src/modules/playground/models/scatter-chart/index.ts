@@ -75,9 +75,9 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
           <div class="flex flex-col space-y-1">
             <div class="flex items-center space-x-2">
               <span class="inline-block w-2 h-2 rounded-full" style="background-color: ${color};"></span>
-              <span class="font-semibold text-gray-800">${traceName}</span>
+              <span class="font-semibold text-foreground">${traceName}</span>
             </div>
-            <div class="text-sm text-gray-600"><b>X</b>: ${x}, <b>Y</b>: ${y}</div>
+            <div class="text-sm text-accent-foreground"><b>X</b>: ${x}, <b>Y</b>: ${y}</div>
           </div>
         `;
         },

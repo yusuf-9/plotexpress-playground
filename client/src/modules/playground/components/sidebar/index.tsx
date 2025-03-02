@@ -57,13 +57,13 @@ export default function PlaygroundSidebar() {
 
   return (
     <aside
-      className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col ${
+      className={`bg-background border-r border-secondary transition-all duration-300 flex flex-col ${
         isSidebarExpanded ? "w-96" : "w-16"
       }`}
     >
       <nav className="flex-1 flex items-stretch">
         {/* collapsed sidebar */}
-        <div className="flex-shrink-0 flex flex-col items-center w-16 py-4 space-y-4 border-r border-gray-200">
+        <div className="flex-shrink-0 flex flex-col items-center w-16 py-4 space-y-4 border-r border-secondary">
           {/* sidebar trigger */}
           <IconButton
             icon={isSidebarExpanded ? <ChevronLeft /> : <ChevronRight />}

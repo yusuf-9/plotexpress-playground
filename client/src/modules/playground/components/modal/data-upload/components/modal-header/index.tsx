@@ -4,7 +4,7 @@ import { DialogHeader, DialogTitle } from "@/common/components/ui/dialog";
 const DataModalHeader = () => {
   return (
     <DialogHeader className="px-6 py-4">
-      <DialogTitle>Upload Data</DialogTitle>
+      <DialogTitle className="text-foreground">Upload Data</DialogTitle>
     </DialogHeader>
   );
 };

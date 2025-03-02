@@ -20,8 +20,8 @@ export default function IconButton(props: Props) {
           variant="ghost"
           size="icon"
           className={cn(
-            "text-gray-500 hover:text-[#0f9d58] hover:bg-gray-100",
-            renderActiveState && "!text-main !bg-main-light"
+            "text-muted-foreground hover:text-primary hover:bg-secondary",
+            renderActiveState && "!text-primary !bg-primary-light"
           )}
           onClick={onClick}
         >

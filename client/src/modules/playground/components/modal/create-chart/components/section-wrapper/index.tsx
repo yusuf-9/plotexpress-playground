@@ -32,7 +32,7 @@ const SectionWrapper: React.FC<Props> = props => {
       <div className="flex flex-grow p-6 space-x-6">
         <div
           className={cn(
-            "flex-grow flex flex-col bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300",
+            "flex-grow flex flex-col bg-background rounded-lg shadow-sm border border-gray-200 transition-all duration-300",
             !isChartColumnExpanded ? "flex-grow" : "w-2/3"
           )}
         >
@@ -40,7 +40,7 @@ const SectionWrapper: React.FC<Props> = props => {
         </div>
         <div
           className={cn(
-            "bg-white py-2 px-1 space-y-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 flex flex-col",
+            "bg-background py-2 px-1 space-y-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 flex flex-col",
             !isChartColumnExpanded ? "w-16" : "w-1/3"
           )}
         >
@@ -58,8 +58,8 @@ const SectionWrapper: React.FC<Props> = props => {
             <div className={cn("flex-grow flex w-full items-center relative")}>
               {!chartPreviewJsx ? (
                 <div className=" absolute w-full top-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-5">
-                  <ChartPie className="text-main/50 h-20 w-20" />
-                  <p className="text-gray-600 text-center">Select traces on the left to preview chart</p>
+                  <ChartPie className="text-primary/50 h-20 w-20" />
+                  <p className="text-accent-foreground text-center">Select traces on the left to preview chart</p>
                 </div>
               ) : (
                 chartPreviewJsx

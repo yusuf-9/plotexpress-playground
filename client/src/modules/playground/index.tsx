@@ -15,7 +15,7 @@ export default function Playground() {
     <StoreProvider>
       <DependencyInjector>
         <PlaygroundLoader>
-          <div className="flex flex-col h-screen bg-gray-50">
+          <div className="flex flex-col h-screen bg-primary-foreground">
             {/* Header */}
             <PlaygroundHeader />
 

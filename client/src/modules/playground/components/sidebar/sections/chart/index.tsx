@@ -9,10 +9,9 @@ export default function ChartSidebarSection(props: Props) {
   const { openChartEditor } = props;
   return (
     <div className="flex flex-col">
-      <h3 className="font-semibold mb-2 text-gray-700">Plotting</h3>
+      <h3 className="font-semibold mb-2 text-foreground">Plotting</h3>
       <Button
-        variant="outline"
-        className="w-full justify-center bg-main !text-white hover:bg-main-dark"
+        variant="default"
         onClick={openChartEditor}
       >
         <PieChart className="mr-2 h-4 w-4" />

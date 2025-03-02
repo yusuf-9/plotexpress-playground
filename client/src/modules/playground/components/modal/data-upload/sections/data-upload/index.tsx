@@ -39,7 +39,7 @@ const DataUploadSection = (props: Props) => {
       )}
       <div
         {...getRootProps()}
-        className="m-6 border-2 flex-grow flex items-center justify-center border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#0f9d58] transition-colors"
+        className="m-6 border-2 flex-grow flex items-center justify-center border-dashed border-foreground/30 rounded-lg p-12 text-center cursor-pointer hover:border-primary transition-colors"
       >
         <input {...getInputProps()} />
 
@@ -56,10 +56,10 @@ const DataUploadSection = (props: Props) => {
           </div>
         )}
         {!isUploading && !isUploaded && (
-          <div>
-            <Upload className="mx-auto h-12 w-12 text-gray-400" />
+          <div className="text-foreground">
+            <Upload className="mx-auto h-12 w-12" />
             <p className="mt-2 text-lg">Drag &lsquo;n&rsquo; drop a file here, or click to select a file</p>
-            <p className="mt-1 text-sm text-gray-500">Supported file types: CSV, XLS, XLSX</p>
+            <p className="mt-1 text-sm text-muted-foreground">Supported file types: CSV, XLS, XLSX</p>
           </div>
         )}
       </div>

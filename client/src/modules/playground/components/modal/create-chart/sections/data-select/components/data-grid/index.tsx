@@ -67,11 +67,11 @@ const DataGrid = (props: Props) => {
         {!isFileColumnCollapsed && (
           <>
             <h3 className="font-semibold mb-0 text-sm">Uploaded files</h3>
-            <ul className="space-y-2 text-sm text-gray-600 w-full">{fileOptions}</ul>
+            <ul className="space-y-2 text-sm text-accent-foreground w-full">{fileOptions}</ul>
           </>
         )}
       </div>
-      <div className="flex-grow bg-white overflow-y-auto ag-theme-quartz [&_.ag-root-wrapper]:rounded-none [&_.ag-root-wrapper]:border-none">
+      <div className="flex-grow bg-background overflow-y-auto ag-theme-quartz [&_.ag-root-wrapper]:rounded-none [&_.ag-root-wrapper]:border-none">
         {selectedFileId ? (
           <DataEditor {...dataGridProps} />
         ) : (
