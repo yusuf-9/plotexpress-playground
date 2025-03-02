@@ -22,7 +22,7 @@ export default function useFile(props: Props) {
     fileName: "",
   });
 
-  const maxFileSizeInMB = 10;
+  const maxFileSizeInMB = 10 * 1024 * 1024;
 
   const handleFileUpload = useCallback(
     async (file: File) => {
