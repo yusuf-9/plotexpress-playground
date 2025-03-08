@@ -114,7 +114,7 @@ const createPlaygroundStore = () => {
           files: {
             ...prevStore.files,
             [fileUUID]: {
-              name: prevStore.files[fileUUID]?.name,
+              ...prevStore.files[fileUUID],
               data: fileData,
             },
           },

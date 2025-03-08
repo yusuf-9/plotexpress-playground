@@ -81,7 +81,7 @@ export default function CreateChartModal(props: Props) {
       open={true}
       onOpenChange={() => onClose()}
     >
-      <DialogContent className="!w-[90vw] !max-w-[1800px] h-[90vh] flex flex-col p-0 bg-background overflow-hidden gap-0">
+      <DialogContent className="!w-[90vw] !max-w-[1800px] h-[90vh] flex flex-col p-0 overflow-hidden gap-0">
         <TooltipProvider>
           <ModalHeader />
           <Tabs

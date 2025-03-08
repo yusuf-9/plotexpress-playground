@@ -1,5 +1,6 @@
 import { StoreApi, UseBoundStore } from "zustand";
 
+// services
 import IndexedDBService from "../indexed-db";
 
 // types
@@ -7,6 +8,7 @@ import { PlaygroundStore } from "../../store/playground.store";
 import { Chart, IndexedDBCachedFile } from "../../types";
 import { FileData } from "../../types";
 
+// constants
 import { INDEXED_DB_STORES } from "../../constants";
 
 export default class AppLoader {
@@ -28,6 +30,7 @@ export default class AppLoader {
       onProgress(90);
 
       await new Promise(resolve => setTimeout(resolve, 100));
+
       const fileData: FileData = (cachedFiles || []).reduce<FileData>((acc: FileData, file: Record<string, any>) => {
         const cachedFile = file as IndexedDBCachedFile;
         if (!cachedFile?.id || !cachedFile?.data || !cachedFile?.name) return acc;

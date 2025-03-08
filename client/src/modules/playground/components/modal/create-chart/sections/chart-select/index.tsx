@@ -26,8 +26,11 @@ const ChartSelectSection = (props: Props) => {
             key={chart.label}
             variant="outline"
             className={cn(
-              "h-52 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-white to-[#f0f9ff] hover:from-[#e6fff7] hover:to-[#ccfbf1] transition-all duration-300 shadow-sm hover:shadow-md",
-              selectedChartType === chart.key && "from-[#e6fff7] to-[#ccfbf1] shadow-md"
+              "h-52 flex flex-col items-center justify-center gap-4 bg-gradient-to-br transition-all duration-300 shadow-sm hover:shadow-md",
+              "from-white to-primary/10 hover:from-white hover:to-primary/30",
+              "dark:from-secondary dark:to-primary/30 dark:hover:to-primary/80",
+              selectedChartType === chart.key &&
+                "from-primary-light to-primary/50 dark:from-primary/40 dark:to-primary/80 shadow-md"
             )}
             onClick={() => onChartSelect(chart.key)}
           >

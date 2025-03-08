@@ -1,0 +1,1 @@
+export const INDEXED_DB_NAME = "plot-express-indexed-db"

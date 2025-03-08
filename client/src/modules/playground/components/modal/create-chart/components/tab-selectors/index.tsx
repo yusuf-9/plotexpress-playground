@@ -12,7 +12,7 @@ type Props = {
 const TabSelectors = (props: Props) => {
   const { currentStep, onStepChange, checkIfStepIsDisabled } = props;
   return (
-    <TabsList className="w-full justify-start h-12 bg-gray-50 px-6 border-b">
+    <TabsList className="w-full justify-start h-12 px-6 border-b border-b-secondary bg-primary-foreground">
       {Object.values(STEPS).map(step => {
         const isStepDisabled = checkIfStepIsDisabled(step.value);
         const isStepActive = step.value === currentStep;

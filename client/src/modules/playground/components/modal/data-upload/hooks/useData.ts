@@ -18,7 +18,7 @@ export default function useData() {
   const existingParsedData = fileToBeEdited?.data;
 
   const { dataManager } = useDependencyInjector();
-  
+
   const [parsedData, setParsedData] = useState<ParsedData | undefined>(cloneDeep(existingParsedData));
   const dataEditorRef = useRef<AgGridReact<ParsedDataObject>>(null);
 
@@ -62,12 +62,14 @@ export default function useData() {
       });
 
       if (fileToBeEdited) {
-        return dataManager.updateFile(editableFileId, updatedData);
+        dataManager.updateFile(editableFileId, updatedData);
+        setFileToBeEditedId("");
+        return;
       }
 
       dataManager.addFile(fileName, updatedData);
     },
-    [fileToBeEdited, dataManager, editableFileId]
+    [fileToBeEdited, dataManager, editableFileId, setFileToBeEditedId]
   );
 
   return {

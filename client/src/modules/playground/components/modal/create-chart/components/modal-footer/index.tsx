@@ -12,7 +12,7 @@ type Props = {
 const ModalFooter = (props: Props) => {
   const { disableNextStep, onNext, onPrevious, isLastStep, disablePreviousStep } = props;
   return (
-    <div className="flex-shrink-0 px-6 py-4 flex justify-between items-center border-t bg-gray-50">
+    <div className="flex-shrink-0 px-6 py-4 flex justify-between items-center border-t border-t-secondary bg-primary-foreground">
       <Button
         onClick={onPrevious}
         variant="outline"

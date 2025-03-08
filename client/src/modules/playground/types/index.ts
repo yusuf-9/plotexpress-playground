@@ -20,6 +20,11 @@ export type IndexedDBCachedFile = {
   lastUpdated: string
 }
 
+export type IndexedDBCachedChart = {
+  id: string;
+  lastUpdated: string
+} & ChartConfig;
+
 export type ChartTypes = (typeof CHART_TYPES)[keyof typeof CHART_TYPES];
 
 export type AxisTypes = "x" | "y";

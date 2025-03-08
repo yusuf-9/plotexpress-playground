@@ -1,3 +1,4 @@
+import { INDEXED_DB_NAME } from "@/common/config";
 import { INDEXED_DB_STORES } from "../../constants";
 
 export default class IndexedDBService {
@@ -22,7 +23,7 @@ export default class IndexedDBService {
     return new Promise((resolve, reject) => {
       if(typeof window === "undefined") return;
       
-      const request = indexedDB.open("playground", 1);
+      const request = indexedDB.open(INDEXED_DB_NAME, 1);
 
       request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;

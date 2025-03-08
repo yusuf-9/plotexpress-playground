@@ -47,8 +47,6 @@ export default class DataManager {
   public async updateFile(fileId: string, fileData: ParsedData): Promise<void> {
     /**
      * Update the file data in the store
-     * Get a change log of the file data by comparing the old and new file data
-     * Upload the change log to the server, to get the latest file's updated at
      * Update the data in the indexed DB
      */
 
@@ -76,15 +74,22 @@ export default class DataManager {
   /**
    * Public method to handle chart creation
    * Creates a new chart in the store
+   * Add the chart to the indexedDB
    */
   public async addChart(newChartConfig: ChartConfig) {
     const addChartInStore = this.storeRef.getState().addChart;
-    addChartInStore(newChartConfig);
+    const newChart = addChartInStore(newChartConfig);
+    this.indexedDbManager.upsertData(INDEXED_DB_STORES.CHARTS, {
+      id: newChart.i,
+      ...newChart,
+      lastUpdated: new Date().getTime(),
+    });
   }
 
   /**
    * Public method to handle chart updates
    * Updates the chart in the store
+   * Update the chart in the indexedDB
    */
   public async updateChart(chartId: string, updatedChart: Chart) {
     const updateChartInStore = this.storeRef.getState().updateChart;
@@ -92,14 +97,22 @@ export default class DataManager {
 
     updateChartInStore(chartId, updatedChart);
     setEditChartId("");
+
+    this.indexedDbManager.upsertData(INDEXED_DB_STORES.CHARTS, {
+      id: chartId,
+      ...updatedChart,
+      lastUpdated: new Date().getTime(),
+    });
   }
 
   /**
    * Public method to handle chart deletion
    * Deletes the chart from the store
+   * Deletes the chart from the indexedDB
    */
   public async deleteChart(chartId: string) {
     const removeChartFromStore = this.storeRef.getState().removeChart;
     removeChartFromStore(chartId);
+    this.indexedDbManager.deleteData(INDEXED_DB_STORES.CHARTS, chartId);
   }
 }
