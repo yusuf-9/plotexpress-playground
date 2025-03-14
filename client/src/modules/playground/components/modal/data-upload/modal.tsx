@@ -10,6 +10,10 @@ import DataEditorSection from "@/modules/playground/components/data-editor";
 // hooks
 import useFile from "./hooks/useFile";
 import useData from "./hooks/useData";
+import { useTheme } from "@/common/providers/theme";
+
+// utils
+import { cn } from "@/common/utils";  
 
 type Props = {
   onClose: () => void;
@@ -17,6 +21,8 @@ type Props = {
 
 export default function DataUploadModal(props: Props) {
   const { onClose } = props;
+
+  const { theme } = useTheme();
 
   const {
     parsedData,
@@ -48,7 +54,11 @@ export default function DataUploadModal(props: Props) {
       >
         <div className="h-full flex flex-col">
           <ModalHeader />
-          <div className="flex-grow flex flex-col ag-theme-quartz">
+          <div className={cn(
+            "flex-grow flex flex-col ag-theme-quartz",
+            theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz",
+          )}
+          >
             {shouldRenderDataUploadSection && (
               <DataUploadSection
                 error={error}

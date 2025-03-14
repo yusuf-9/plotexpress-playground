@@ -21,7 +21,7 @@ const ModalFooter = (props: Props) => {
         Previous
       </Button>
       <Button
-        className="bg-[#0f9d58] text-background hover:bg-[#0b8043]"
+        variant="default"
         disabled={disableNextStep}
         onClick={onNext}
       >

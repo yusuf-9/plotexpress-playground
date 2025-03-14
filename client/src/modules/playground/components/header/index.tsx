@@ -1,10 +1,11 @@
-import { BarChart3, FolderOpen, Laptop, LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { BarChart3, FolderOpen, LogOut, Moon, Settings, Sun, User } from "lucide-react";
 
 // components
 import { Input } from "@/common/components/ui/input";
 
 // hooks
 import { useStore } from "../../contexts/store.context";
+import { useTheme } from "@/common/providers/theme";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/common/components/ui/dropdown-menu";
 import { Button } from "@/common/components/ui/button";
 
@@ -14,14 +15,7 @@ export default function PlaygroundHeader() {
 
   const workspaceName = workspace.name;
 
-  const setTheme = (theme: 'light' | 'dark' | 'system') => {
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
-    } else {
-      document.documentElement.classList.toggle('dark', theme === 'dark');
-    }
-  };
+  const { setTheme } = useTheme();
 
   return (
     <header className="bg-primary text-background p-4 flex items-center justify-between shadow-md">
@@ -65,10 +59,6 @@ export default function PlaygroundHeader() {
             <DropdownMenuItem onClick={() => setTheme("dark")}>
               <Moon className="mr-2 h-4 w-4 text-foreground" />
               <span>Dark</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-              <Laptop className="mr-2 h-4 w-4 text-foreground" />
-              <span>System</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

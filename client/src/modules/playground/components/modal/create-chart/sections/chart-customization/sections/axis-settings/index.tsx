@@ -32,7 +32,7 @@ const AxisSettings: React.FC<Props> = props => {
 
   return (
     <div className="flex-grow flex overflow-y-auto">
-      <div className="flex-1 flex flex-col space-y-4 pl-3 pr-6 border-r-2 border-gray-200">
+      <div className="flex-1 flex flex-col space-y-4 pl-3 pr-6 border-r-2 border-secondary">
         <div className="flex items-center gap-5 justify-between">
           <Label
             htmlFor="x-axis-label"
@@ -44,7 +44,7 @@ const AxisSettings: React.FC<Props> = props => {
             type="text"
             id="x-axis-label"
             placeholder="X axis label"
-            className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+            className="flex-1 border-b-2 border-secondary rounded-md p-2"
             defaultValue={chartSettings.xAxisLabel}
             onChange={e => {
               onSettingChange("xAxisLabel", e.target.value);
@@ -69,7 +69,7 @@ const AxisSettings: React.FC<Props> = props => {
               <Input
                 type="number"
                 placeholder="Min"
-                className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+                className="flex-1 border-b-2 border-secondary rounded-md p-2"
                 defaultValue={chartSettings.xAxisLimits?.min}
                 onChange={e => {
                   updateAxisLimit("x", "min", e.target.value);
@@ -86,7 +86,7 @@ const AxisSettings: React.FC<Props> = props => {
               <Input
                 type="number"
                 placeholder="Max"
-                className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+                className="flex-1 border-b-2 border-secondary rounded-md p-2"
                 defaultValue={chartSettings.xAxisLimits?.max}
                 onChange={e => {
                   updateAxisLimit("x", "max", e.target.value);
@@ -108,7 +108,7 @@ const AxisSettings: React.FC<Props> = props => {
             type="text"
             id="y-axis-label"
             placeholder="Y axis label"
-            className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+            className="flex-1 border-b-2 border-secondary rounded-md p-2"
             defaultValue={chartSettings.yAxisLabel}
             onChange={e => {
               onSettingChange("yAxisLabel", e.target.value);
@@ -133,7 +133,7 @@ const AxisSettings: React.FC<Props> = props => {
               <Input
                 type="number"
                 placeholder="Min"
-                className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+                className="flex-1 border-b-2 border-secondary rounded-md p-2"
                 defaultValue={chartSettings.yAxisLimits?.min}
                 onChange={e => {
                   updateAxisLimit("y", "min", e.target.value);
@@ -151,7 +151,7 @@ const AxisSettings: React.FC<Props> = props => {
               <Input
                 type="number"
                 placeholder="Max"
-                className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+                className="flex-1 border-b-2 border-secondary rounded-md p-2"
                 defaultValue={chartSettings.yAxisLimits?.max}
                 onChange={e => {
                   updateAxisLimit("y", "max", e.target.value);

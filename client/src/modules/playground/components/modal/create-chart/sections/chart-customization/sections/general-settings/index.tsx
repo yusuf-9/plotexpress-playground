@@ -19,7 +19,7 @@ const GeneralSettings: React.FC<Props> = props => {
 
   return (
     <div className="flex-grow flex overflow-y-auto">
-      <div className="flex-1 flex flex-col space-y-4 pl-3 pr-6 border-r-2 border-gray-200">
+      <div className="flex-1 flex flex-col space-y-4 pl-3 pr-6 border-r-2 border-secondary">
         <div className="flex items-center gap-5 justify-between">
           <Label
             htmlFor="chart-title"
@@ -31,7 +31,7 @@ const GeneralSettings: React.FC<Props> = props => {
             type="text"
             id="chart-title"
             placeholder="Chart title"
-            className="flex-1 border-b-2 border-gray-300 rounded-md p-2"
+            className="flex-1 border-b-2 border-secondary rounded-md p-2"
             defaultValue={chartSettings.title}
             onChange={e => {
               onSettingChange("title", e.target.value);

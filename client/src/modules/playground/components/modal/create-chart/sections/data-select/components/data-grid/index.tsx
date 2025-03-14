@@ -12,6 +12,9 @@ import { cn } from "@/common/utils";
 // types
 import { FileData } from "@/modules/playground/types";
 
+// hooks
+import { useTheme } from "@/common/providers/theme";
+
 type Props = {
   isFileColumnCollapsed: boolean;
   setIsFileColumnCollapsed: (collapsed: boolean) => void;
@@ -31,15 +34,16 @@ const DataGrid = (props: Props) => {
     dataGridProps,
   } = props;
 
+  const { theme } = useTheme();
+
   const fileOptions = useMemo(() => {
     return Object.entries(uploadedFiles).map(([fileKey, fileData]) => {
       return (
         <li key={fileKey}>
           <Button
-            variant="outline"
+            variant={selectedFileId === fileKey ? "default" : "outline"}
             className={cn(
-              "h-auto w-full bg-gradient-to-br overflow-hidden hover:from-[#e6fff7] hover:to-[#ccfbf1] transition-all duration-300 shadow-sm hover:shadow-sm",
-              selectedFileId === fileKey ? "from-[#e6fff7] to-[#ccfbf1] shadow-sm" : "from-white to-[#f0f9ff]"
+              "h-auto w-full overflow-hidden transition-all duration-300 shadow-sm hover:shadow-sm",
             )}
             onClick={() => setSelectedFileId(fileKey)}
           >
@@ -53,7 +57,7 @@ const DataGrid = (props: Props) => {
   return (
     <div className="flex-grow flex">
       <div
-        className={`relative py-3 px-2 flex flex-col gap-4 bg-gray-50 transition-all duration-300 border-r rounded-bl-lg ${
+        className={`relative py-3 px-2 flex flex-col gap-4 bg-background-light transition-all duration-300 border-r rounded-bl-lg ${
           isFileColumnCollapsed ? "w-12" : "w-48"
         }`}
       >
@@ -71,12 +75,16 @@ const DataGrid = (props: Props) => {
           </>
         )}
       </div>
-      <div className="flex-grow bg-background overflow-y-auto ag-theme-quartz [&_.ag-root-wrapper]:rounded-none [&_.ag-root-wrapper]:border-none">
+      <div className={cn(
+        "flex-grow bg-background-light overflow-y-auto ag-theme-quartz [&_.ag-root-wrapper]:rounded-none [&_.ag-root-wrapper]:border-none",
+        theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz",
+      )}
+      >
         {selectedFileId ? (
           <DataEditor {...dataGridProps} />
         ) : (
           <div className="flex justify-center items-center h-full w-full">
-            <h3 className="text-lg font-semibold mb-1">Select a file to view its data.</h3>
+            <h3 className="text-lg font-semibold mb-1 text-foreground">Select a file to view its data.</h3>
           </div>
         )}
       </div>

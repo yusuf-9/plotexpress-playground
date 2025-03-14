@@ -32,7 +32,7 @@ const SectionWrapper: React.FC<Props> = props => {
       <div className="flex flex-grow p-6 space-x-6">
         <div
           className={cn(
-            "flex-grow flex flex-col bg-background rounded-lg shadow-sm border border- transition-all duration-300",
+            "flex-grow flex flex-col bg-background-light rounded-lg shadow-sm border border- transition-all duration-300",
             !isChartColumnExpanded ? "flex-grow" : "w-2/3"
           )}
         >
@@ -40,7 +40,7 @@ const SectionWrapper: React.FC<Props> = props => {
         </div>
         <div
           className={cn(
-            "bg-background py-2 px-1 space-y-6 rounded-lg shadow-sm border border- transition-all duration-300 flex flex-col",
+            "bg-background-light py-2 px-1 space-y-6 rounded-lg shadow-sm border border- transition-all duration-300 flex flex-col",
             !isChartColumnExpanded ? "w-16" : "w-1/3"
           )}
         >

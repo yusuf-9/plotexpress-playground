@@ -51,16 +51,16 @@ const ChartCustomizationSection = (props: Props) => {
               onClick={() => setSelectedSettingsCategory(category)}
               key={category.value}
               className={cn(
-                "px-4 py-3 border-b-2 cursor-pointer hover:bg-gray-100",
-                category.value === selectedSettingsCategory.value ? "bg-primary-light hover:!bg-primary/20" : ""
+                "px-4 py-3 border-b-2 cursor-pointer hover:bg-primary/20",
+                category.value === selectedSettingsCategory.value ? "bg-primary/50 hover:bg-primary/50" : ""
               )}
             >
               {category.title}
             </li>
           ))}
         </ul>
-        <div className="flex-grow flex flex-col space-y-5 p-4">
-          <h3 className="text-lg font-semibold mb-0">{selectedSettingsCategory.title}</h3>
+        <div className="flex-grow flex flex-col gap-5 p-4">
+          <h3 className="text-lg font-semibold">{selectedSettingsCategory.title}</h3>
           {selectedSettingsCategory.value === SETTING_CATEGORIES.GENERAL.value && (
             <GeneralSettings
               chartSettings={chartSettings}

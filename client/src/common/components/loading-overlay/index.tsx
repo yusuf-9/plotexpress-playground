@@ -21,7 +21,7 @@ function LoadingOverlay(props: Props) {
         {loadingPercentage && (
           <div className="flex items-stretch justify-start h-1.5 w-40 bg-primary-dark/70 rounded-md">
             <div
-              className="bg-background h-full rounded-md transition-all duration-200"
+              className="bg-white h-full rounded-md transition-all duration-200"
               style={{ width: `${loadingPercentage}%` }}
             ></div>
           </div>

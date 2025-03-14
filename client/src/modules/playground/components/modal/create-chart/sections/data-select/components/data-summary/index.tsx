@@ -59,7 +59,7 @@ const DataSummary = (props: Props) => {
       <div
         key={index}
         className={cn(
-          "flex flex-col bg-gray-50 p-3 rounded-lg border",
+          "flex flex-col bg-background-light p-3 rounded-lg border",
           index === selectedTraceIndex ? "border-primary" : ""
         )}
       >
@@ -130,7 +130,7 @@ const DataSummary = (props: Props) => {
   }, [onTraceDelete, onTraceEdit, debouncedOnTraceSettingsItemEdit, selectedTraceIndex, traces, uploadedFiles]);
 
   return (
-    <div className="h-[135px] flex bg-background border-b-2 rounded-lg rounded-b-none">
+    <div className="h-[135px] flex bg-background-light border-b-2 rounded-lg rounded-b-none">
       <div className={cn("w-3/4 p-2 h-auto overflow-y-auto", traces.length && "grid grid-cols-1 gap-2 md:grid-cols-2")}>
         {tracesJsx}
       </div>
