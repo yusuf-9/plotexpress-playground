@@ -1,7 +1,7 @@
 - Fix dark theme - done
 - integrate with local server for testing files and chart storage in indexedDB - done
 - create serverless backend functions and deploy them on edge - done
-- deploy client on a cdn
+- deploy client on a cdn - done
 - add new chart types and missing plotting features
 - create help overlays
 - deploy
