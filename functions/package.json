@@ -1,6 +1,6 @@
 {
-	"name": "my-first-worker",
-	"version": "0.0.0",
+	"name": "plotexpress-playground-worker",
+	"version": "0.0.1",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
