@@ -37,8 +37,8 @@ const ConfirmProvider = ({ children }: PropsWithChildren): ReactElement => {
       ...(options.descriptionClassName && { descriptionClassName: options.descriptionClassName }),
       ...(options.confirmButtonText && { confirmButtonText: options.confirmButtonText }),
       ...(options.cancelButtonText && { cancelButtonText: options.cancelButtonText }),
-      ...(options.confirmButtonClassName && { confirmButtonClassName: options.confirmButtonClassName }),
-      ...(options.cancelButtonClassName && { cancelButtonClassName: options.cancelButtonClassName }),
+      ...(options.confirmButtonVariant && { confirmButtonVariant: options.confirmButtonVariant }),
+      ...(options.cancelButtonVariant && { cancelButtonVariant: options.cancelButtonVariant }),
     });
   }, []);
 

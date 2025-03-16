@@ -4,6 +4,7 @@ import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import AppLoader from "../services/app-loader";
 import DataManager from "../services/data-manager";
 import IndexedDBService from "../services/indexed-db";
+import EventManager from "@/common/services/event-manager";
 
 // contexts
 import { useUnreactiveStore } from "./store.context";
@@ -12,6 +13,7 @@ import { useUnreactiveStore } from "./store.context";
 const PlaygroundDependencyInjectorContext = createContext<{
   appLoader: AppLoader;
   dataManager: DataManager;
+  eventManager: EventManager;
 } | null>(null);
 
 export const useDependencyInjector = () => {
@@ -28,15 +30,17 @@ export const DependencyInjector = (props: PropsWithChildren) => {
 
   const storeAPI = useUnreactiveStore();
 
-  const indexedDbManager = useMemo(() => new IndexedDBService(), [])
+  const indexedDbManager = useMemo(() => new IndexedDBService(), []);
   const appLoader = useMemo(() => new AppLoader(storeAPI, indexedDbManager), [indexedDbManager, storeAPI]);
   const dataManager = useMemo(() => new DataManager(storeAPI, indexedDbManager), [indexedDbManager, storeAPI]);
+  const eventManager = useMemo(() => new EventManager(), []);
 
   return (
     <PlaygroundDependencyInjectorContext.Provider
       value={{
         appLoader,
         dataManager,
+        eventManager,
       }}
     >
       {children}

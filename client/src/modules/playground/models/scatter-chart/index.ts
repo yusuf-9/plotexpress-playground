@@ -31,6 +31,8 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
       const fileX = uploadedFiles[traceConfig.x.fileId];
       const fileY = uploadedFiles[traceConfig.y.fileId];
 
+      if (!fileX || !fileY) return [];
+
       const dataX = fileX.data.map(dataObject => {
         return dataObject[traceConfig.x!.column];
       });

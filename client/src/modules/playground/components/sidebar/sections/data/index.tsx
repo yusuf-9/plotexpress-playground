@@ -7,6 +7,7 @@ import { Separator } from "@/common/components/ui/separator";
 import { ScrollArea } from "@/common/components/ui/scroll-area";
 import { useConfirm } from "@/common/providers/confirmation";
 import { useDependencyInjector } from "@/modules/playground/contexts/dependency-injector.context";
+import { EVENTS } from "@/modules/playground/constants/events";
 
 type Props = {
   openDataEditor: () => void;
@@ -20,6 +21,7 @@ export default function DataSidebarSection(props: Props) {
 
   const filesMap = useStore(store => store.files);
   const setFileToBeEditedId = useStore(store => store.setFileToBeEditedId);
+  const { eventManager } = useDependencyInjector();
 
   const handleEditFile = useCallback(
     (fileKey: string) => {
@@ -33,14 +35,16 @@ export default function DataSidebarSection(props: Props) {
     (fileId: string) => {
       confirm({
         title: "Delete file",
-        description: "Are you sure you want to delete this file? It will be deleted permanently.",
+        description: "Are you sure you want to delete this file? The associated charts relying on this data will no longer plot this data.",
         onConfirm: () => {
           dataManager.deleteFile(fileId);
+          eventManager.emit(EVENTS.DATA_DELETE);
         },
         onCancel: () => {},
+        confirmButtonVariant: "destructive",
       });
     },
-    [confirm, dataManager]
+    [confirm, dataManager, eventManager]
   );
 
   const filesJSX = useMemo(() => {

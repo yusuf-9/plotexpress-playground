@@ -11,13 +11,16 @@ import { useStore } from "@/modules/playground/contexts/store.context";
 // hooks
 import { useDependencyInjector } from "@/modules/playground/contexts/dependency-injector.context";
 
+// constants
+import { EVENTS } from "@/modules/playground/constants/events";
+
 export default function useData() {
   const editableFileId = useStore(store => store.fileToBeEditedId);
   const fileToBeEdited = useStore(store => store.files[editableFileId]);
   const setFileToBeEditedId = useStore(store => store.setFileToBeEditedId);
   const existingParsedData = fileToBeEdited?.data;
 
-  const { dataManager } = useDependencyInjector();
+  const { dataManager, eventManager } = useDependencyInjector();
 
   const [parsedData, setParsedData] = useState<ParsedData | undefined>(cloneDeep(existingParsedData));
   const dataEditorRef = useRef<AgGridReact<ParsedDataObject>>(null);
@@ -64,12 +67,13 @@ export default function useData() {
       if (fileToBeEdited) {
         dataManager.updateFile(editableFileId, updatedData);
         setFileToBeEditedId("");
+        eventManager.emit(EVENTS.DATA_UPDATE);
         return;
       }
 
       dataManager.addFile(fileName, updatedData);
     },
-    [fileToBeEdited, dataManager, editableFileId, setFileToBeEditedId]
+    [fileToBeEdited, dataManager, editableFileId, setFileToBeEditedId, eventManager]
   );
 
   return {

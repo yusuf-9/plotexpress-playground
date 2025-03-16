@@ -17,7 +17,11 @@ import AreaChartModel from "@/modules/playground/models/area-chart";
 import { useUnreactiveStore } from "@/modules/playground/contexts/store.context";
 
 // constants
-import { CHART_TYPES } from '@/modules/playground/constants/charts';
+import { CHART_TYPES } from "@/modules/playground/constants/charts";
+import { EVENTS } from "@/modules/playground/constants/events";
+
+// contexts
+import { useDependencyInjector } from "@/modules/playground/contexts/dependency-injector.context";
 
 type Props = {
   chart: Chart;
@@ -50,9 +54,14 @@ export default function useChartConfig(props: Props) {
   const chartModelRef = useRef(chartModelType);
   const chartModel = chartModelRef.current;
 
+  const { eventManager } = useDependencyInjector();
+
   const chartConfig: EChartsOption = useMemo(() => {
     return chartModel.getChartConfig(tracesConfig, chartSettings);
   }, [chartModel, tracesConfig, chartSettings]);
+  const previousChartConfig = useRef(chartConfig);
+
+  // Handlers ----------------------------------------------------------
 
   const setChartRef = useCallback(
     (instance: EChartsReact) => {
@@ -61,6 +70,15 @@ export default function useChartConfig(props: Props) {
     [id, setRef]
   );
 
+  const handleDataUpdate = useCallback(() => {
+    if (!chartAPI) return;
+
+    const newChartConfig = chartModel.getChartConfig(tracesConfig, chartSettings);
+
+    const chartInstance = chartAPI.getEchartsInstance();
+    chartInstance.setOption(newChartConfig, { notMerge: true });
+  }, [chartAPI, chartModel, tracesConfig, chartSettings]);
+
   // Effects ----------------------------------------------------------
 
   /**
@@ -68,13 +86,24 @@ export default function useChartConfig(props: Props) {
    */
   useEffect(() => {
     if (!chartAPI) return;
+    if (JSON.stringify(previousChartConfig.current) === JSON.stringify(chartConfig)) return;
 
     const chartInstance = chartAPI.getEchartsInstance();
-    chartInstance.setOption(
-      chartConfig,
-      { notMerge: true }
-    );
+    chartInstance.setOption(chartConfig, { notMerge: true });
   }, [chartAPI, chartConfig]);
+
+  /**
+   * Effect to update the series when data of a file changes
+   */
+  useEffect(() => {
+    eventManager.subscribe(EVENTS.DATA_UPDATE, handleDataUpdate);
+    eventManager.subscribe(EVENTS.DATA_DELETE, handleDataUpdate);
+
+    return () => {
+      eventManager.unsubscribe(EVENTS.DATA_UPDATE, handleDataUpdate);
+      eventManager.unsubscribe(EVENTS.DATA_DELETE, handleDataUpdate);
+    };
+  }, [eventManager, handleDataUpdate]);
 
   return { chartConfig, setChartRef, chartModel };
 }

@@ -32,6 +32,8 @@ class PieChartModel extends BaseChartModel implements PieChartModelType {
       const fileX = uploadedFiles[traceConfig.x.fileId];
       const fileY = uploadedFiles[traceConfig.y.fileId];
 
+      if (!fileX || !fileY) return [];
+
       const dataX = fileX.data.map(dataObject => dataObject[traceConfig.x!.column]);
       const dataY = fileY.data.map(dataObject => dataObject[traceConfig.y!.column]);
 

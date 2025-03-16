@@ -164,6 +164,7 @@ export default function useCreateChartFlow(props: Props) {
   );
 
   const deleteTrace = useCallback((traceIndex: number) => {
+    console.log("traceIndex", traceIndex);
     setChartConfig(prev => {
       if (traceIndex < 0 || traceIndex >= prev.tracesConfig.length) {
         return prev;
@@ -242,7 +243,6 @@ export default function useCreateChartFlow(props: Props) {
     chartType,
     completeTraces,
     allTraces: chartConfig.tracesConfig,
-
     traces: completeTraces,
     isLastStep,
     disablePreviousStep,

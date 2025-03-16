@@ -40,7 +40,7 @@ const DataSummary = (props: Props) => {
     traces,
     uploadedFiles,
     onTraceDelete,
-    onTraceSettingsItemEdit
+    onTraceSettingsItemEdit,
   } = props;
 
   const debouncedOnTraceSettingsItemEdit = useDebouncedCallback(onTraceSettingsItemEdit, 1000);
@@ -82,28 +82,26 @@ const DataSummary = (props: Props) => {
               variant="ghost"
               size="icon"
               className="h-8 w-8"
+              onClick={() => {
+                if (index === selectedTraceIndex) {
+                  return onTraceEdit(null);
+                }
+
+                onTraceEdit(index);
+              }}
             >
-              {index === selectedTraceIndex ? (
-                <Check
-                  onClick={() => onTraceEdit(null)}
-                  className="h-4 w-4"
-                />
-              ) : (
-                <Edit
-                  onClick={() => onTraceEdit(index)}
-                  className="h-4 w-4"
-                />
-              )}
+              {index === selectedTraceIndex ? <Check className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="h-8 w-8"
+              onClick={() => {
+                console.log("traceIndex", index);
+                onTraceDelete(index);
+              }}
             >
-              <Trash2
-                onClick={() => onTraceDelete(index)}
-                className="h-4 w-4"
-              />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>

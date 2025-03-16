@@ -1,14 +1,13 @@
 import { memo } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/common/components/ui/alert-dialog";
+import { Button, ButtonVariant } from "@/common/components/ui/button";
 
 export type ConfirmationDialogProps = {
   title: string;
@@ -19,23 +18,23 @@ export type ConfirmationDialogProps = {
   descriptionClassName?: string;
   confirmButtonText?: string;
   cancelButtonText?: string;
-  confirmButtonClassName?: string;
-  cancelButtonClassName?: string;
+  confirmButtonVariant?: ButtonVariant;
+  cancelButtonVariant?: ButtonVariant;
 };
 
 const ConfirmationDialog = (props: ConfirmationDialogProps & { open: boolean }) => {
   const {
     title,
     description,
-    cancelButtonClassName,
     cancelButtonText,
-    confirmButtonClassName,
     confirmButtonText,
     descriptionClassName,
     titleClassName,
     onConfirm,
     onCancel,
-    open
+    open,
+    confirmButtonVariant,
+    cancelButtonVariant,
   } = props;
   return (
     <AlertDialog open={open}>
@@ -45,18 +44,18 @@ const ConfirmationDialog = (props: ConfirmationDialogProps & { open: boolean }) 
           <AlertDialogDescription className={descriptionClassName}>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel
-            className={cancelButtonClassName}
+          <Button
+            variant={cancelButtonVariant ?? "outline"}
             onClick={onCancel}
           >
             {cancelButtonText ?? "Cancel"}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            className={confirmButtonClassName}
+          </Button>
+          <Button
+            variant={confirmButtonVariant ?? "default"}
             onClick={onConfirm}
           >
             {confirmButtonText ?? "Confirm"}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -42,6 +42,8 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
         const fileX = uploadedFiles[traceConfig.x.fileId];
         const fileY = uploadedFiles[traceConfig.y.fileId];
 
+        if (!fileX || !fileY) return acc;
+
         if (!acc["x"]) {
           const dataX = fileX.data.map(dataObject => {
             return dataObject[traceConfig.x!.column];
