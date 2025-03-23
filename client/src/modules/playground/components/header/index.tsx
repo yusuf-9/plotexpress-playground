@@ -6,14 +6,23 @@ import { Input } from "@/common/components/ui/input";
 // hooks
 import { useStore } from "../../contexts/store.context";
 import { useTheme } from "@/common/providers/theme";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/common/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/common/components/ui/dropdown-menu";
 import { Button } from "@/common/components/ui/button";
+import { useLocalStorageState } from "@/common/hooks/use-localstorage-state";
+
+// constants
+import { LOCAL_STORAGE_KEYS } from "../../constants";
 
 export default function PlaygroundHeader() {
   const workspace = useStore(store => store.workspace!);
   const setWorkspace = useStore(store => store.setWorkspace);
 
-  const workspaceName = workspace.name;
+  const [workspaceName, setWorkspaceName] = useLocalStorageState(LOCAL_STORAGE_KEYS.WORKSPACE_NAME, workspace.name);
 
   const { setTheme } = useTheme();
 
@@ -28,12 +37,13 @@ export default function PlaygroundHeader() {
           <Input
             value={workspaceName}
             placeholder="Workspace name"
-            onChange={e =>
+            onChange={e => {
+              setWorkspaceName(e.target.value);
               setWorkspace({
                 ...workspace,
                 name: e.target.value,
-              })
-            }
+              });
+            }}
             className="text-lg bg-background/20 px-3 py-1 rounded-lg hidden sm:inline-block w-60 border-none text-white placeholder:text-white/50"
           />
         </div>
@@ -42,7 +52,7 @@ export default function PlaygroundHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost" 
+              variant="ghost"
               size="icon"
               className="text-background hover:bg-background/20"
             >
@@ -63,7 +73,7 @@ export default function PlaygroundHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"

@@ -9,3 +9,7 @@ export const INDEXED_DB_STORES = {
   FILES: "files",
   CHARTS: "charts"
 }
+
+export const LOCAL_STORAGE_KEYS = {
+  WORKSPACE_NAME: "plotexpress-playground-workspaceName"
+}

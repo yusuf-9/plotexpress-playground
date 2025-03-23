@@ -67,7 +67,7 @@ const AxisSettings: React.FC<Props> = props => {
                 Min
               </Label>
               <Input
-                type="number"
+                type="text"
                 placeholder="Min"
                 className="flex-1 border-b-2 border-secondary rounded-md p-2"
                 defaultValue={chartSettings.xAxisLimits?.min}
@@ -84,7 +84,7 @@ const AxisSettings: React.FC<Props> = props => {
                 Max
               </Label>
               <Input
-                type="number"
+                type="text"
                 placeholder="Max"
                 className="flex-1 border-b-2 border-secondary rounded-md p-2"
                 defaultValue={chartSettings.xAxisLimits?.max}

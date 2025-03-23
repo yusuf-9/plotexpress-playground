@@ -16,6 +16,9 @@ import { useStore } from "@/modules/playground/contexts/store.context";
 import { AxisTypes, Chart, TraceConfig } from "@/modules/playground/types";
 import { AgGridReactProps } from "ag-grid-react";
 
+// utils
+import { getColorBgClass } from "@/modules/playground/utils/colors";
+
 type Props = {
   chartType: Chart["type"];
   allTraces: TraceConfig[];
@@ -77,7 +80,7 @@ export default function useDataSelection(props: Props) {
             (trace.y?.fileId === selectedFileId && trace.y.column === key)
           );
         });
-        if (tracesOfColumn) return `cursor-pointer bg-hex-${tracesOfColumn.settings.color?.replace("#", "")}/10`;
+        if (tracesOfColumn) return `cursor-pointer ${getColorBgClass(tracesOfColumn.settings.color, 20)}`;
         return "cursor-pointer";
       },
       headerClass: () => {
@@ -90,7 +93,7 @@ export default function useDataSelection(props: Props) {
           );
         });
         if (tracesOfColumn)
-          return `cursor-pointer hover:!bg-primary bg-hex-${tracesOfColumn.settings.color?.replace("#", "")}/10`;
+          return `cursor-pointer hover:!bg-primary ${getColorBgClass(tracesOfColumn.settings.color, 20)}`;
         return "cursor-pointer";
       },
     }));

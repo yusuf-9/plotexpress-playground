@@ -109,7 +109,7 @@ const DataSummary = (props: Props) => {
           <div className="text-sm text-accent-foreground">
             <span className="font-semibold">X: </span>
             <span className="text-primary">
-              {uploadedFiles[traceConfig?.x?.fileId ?? ""]?.name?.slice(0, 10) + "..."} :{" "}
+              {uploadedFiles[traceConfig?.x?.fileId ?? ""]?.name?.slice(0, 20) + "..."} :{" "}
             </span>
             <span style={{ color: traceConfig.settings.color }}>{traceConfig?.x?.column}</span>
           </div>
@@ -118,7 +118,7 @@ const DataSummary = (props: Props) => {
           <div className="text-sm text-accent-foreground">
             <span className="font-semibold">Y: </span>
             <span className="text-primary">
-              {uploadedFiles[traceConfig?.y?.fileId ?? ""]?.name?.slice(0, 10) + "..."} :{" "}
+              {uploadedFiles[traceConfig?.y?.fileId ?? ""]?.name?.slice(0, 20) + "..."} :{" "}
             </span>
             <span style={{ color: traceConfig.settings.color }}>{traceConfig?.y?.column}</span>
           </div>
