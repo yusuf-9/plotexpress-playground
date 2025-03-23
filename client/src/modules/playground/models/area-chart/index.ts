@@ -7,7 +7,10 @@ import BaseChartModel from "../chart";
 import { Chart } from "../../types";
 
 interface AreaChartModelType {
-  getChartConfig: (tracesConfig: Chart["tracesConfig"]) => EChartsOption;
+  getChartConfig: (
+    tracesConfig: Chart["tracesConfig"],
+    chartSettings: Chart["chartSettings"]
+  ) => EChartsOption;
   getSeriesData: (tracesConfig: Chart["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
@@ -52,7 +55,10 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the area chart.
    */
-  getChartConfig(traces: Chart["tracesConfig"]): EChartsOption {
+  getChartConfig(
+    traces: Chart["tracesConfig"],
+    chartSettings: Chart["chartSettings"]
+  ): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       name: traces[index]?.settings.name,
@@ -68,16 +74,22 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
         trigger: "axis",
       },
       legend: {
+        show: chartSettings.legendVisibility,
         data: seriesConfig.map(series => series.name),
-        bottom: 0,
+        bottom: chartSettings.legendPosition === "bottom" ? 0 : undefined,
+        top: chartSettings.legendPosition === "top" ? 0 : undefined,
       },
       xAxis: {
         type: "category", // TODO: set this dynamically for timeseries, logging, etc kinds of data
-        name: "X Axis", // TODO: set this dynamically for timeseries, logging, etc kinds of data
+        name: chartSettings?.xAxisLabel,
+        min: chartSettings?.xAxisLimits.min ? parseFloat(chartSettings?.xAxisLimits.min) : undefined,
+        max: chartSettings?.xAxisLimits.max ? parseFloat(chartSettings?.xAxisLimits.max) : undefined,
       },
       yAxis: {
         type: "value",
-        name: "Y Axis",
+        name: chartSettings?.yAxisLabel,
+        min: chartSettings?.yAxisLimits.min ? parseFloat(chartSettings?.yAxisLimits.min) : undefined,
+        max: chartSettings?.yAxisLimits.max ? parseFloat(chartSettings?.yAxisLimits.max) : undefined,
       },
       series: seriesConfig.map(series => ({
         name: series.name,

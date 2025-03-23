@@ -77,10 +77,24 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
       xAxis: {
         type: "category", // TODO: set this dynamically for timeseries, logging, etc kinds of data
         name: chartSettings?.xAxisLabel,
+        // axisLine: {
+        //   show: true,
+        //   lineStyle: {
+        //     type: "dashed",
+        //   },
+        // },
       },
       yAxis: {
         type: "value",
         name: chartSettings?.yAxisLabel,
+        min: chartSettings?.yAxisLimits.min ? parseFloat(chartSettings?.yAxisLimits.min) : undefined,
+        max: chartSettings?.yAxisLimits.max ? parseFloat(chartSettings?.yAxisLimits.max) : undefined,
+        // axisLine: {
+        //   show: true,
+        //   lineStyle: {
+        //     type: "dashed"
+        //   },
+        // },
       },
       series: seriesConfig.map(series => ({
         name: series.name,
