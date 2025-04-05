@@ -84,6 +84,84 @@ export default {
 			}
 		}
 
+		// Health check endpoint
+		if (request.method === 'GET' && new URL(request.url).pathname === '/test-files-metadata') {
+			return new Response(
+				JSON.stringify({
+					data: [
+						{
+							label: 'Stock Prices',
+							description: 'Daily open, high, low, close prices and trading volumes for popular tech stocks over the past month.',
+							category: 'Finance & Economics',
+							link: '',
+						},
+						{
+							label: 'Inflation Rates',
+							description: 'Yearly inflation rates from 2010 to 2024 for major global economies.',
+							category: 'Finance & Economics',
+							link: '',
+						},
+						{
+							label: 'Cryptocurrency Trends',
+							description: 'Daily price trends for major cryptocurrencies like BTC and ETH over the past month.',
+							category: 'Finance & Economics',
+							link: '',
+						},
+						{
+							label: 'Population Growth',
+							description: 'Yearly population data from 2000 to 2024 for several major countries.',
+							category: 'Demographics & Society',
+							link: '',
+						},
+						{
+							label: 'Birth and Death Rates',
+							description: 'Annual birth and death rates from 2000 to 2024 across selected countries.',
+							category: 'Demographics & Society',
+							link: '',
+						},
+						{
+							label: 'Average Temperature',
+							description: 'Average yearly temperature (in Celsius) in global cities from 2000 to 2024.',
+							category: 'Environment & Nature',
+							link: '',
+						},
+						{
+							label: 'Rainfall by Region',
+							description: 'Monthly rainfall data (in millimeters) for various geographic regions.',
+							category: 'Environment & Nature',
+							link: '',
+						},
+						{
+							label: 'Student Grades',
+							description: 'Simulated grades for students across four subjects: Math, Science, History, and English.',
+							category: 'Education & Learning',
+							link: '',
+						},
+						{
+							label: 'Test Scores Over Time',
+							description: 'Average test scores by subject from 2010 to 2024.',
+							category: 'Education & Learning',
+							link: '',
+						},
+						{
+							label: 'Fitness Tracking',
+							description: 'Simulated daily fitness stats for users, including steps, calories burned, and active minutes.',
+							category: 'Fun Ideas',
+							link: '',
+						},
+						{
+							label: 'Music Listening Stats',
+							description: 'Daily music listening stats for users including number of songs played, minutes listened, and top genre.',
+							category: 'Fun Ideas',
+							link: '',
+						},
+					],
+				}),
+				{
+					headers: { 'Content-Type': 'application/json' },
+				}
+			);
+		}
 		return new Response('Not Found', { status: 404 });
 	},
 } satisfies ExportedHandler<Env>;
