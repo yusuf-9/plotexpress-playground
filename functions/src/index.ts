@@ -89,7 +89,7 @@ export default {
 		}
 
 		// Health check endpoint
-		if (request.method === 'GET' && new URL(request.url).pathname === '/test-files-metadata') {
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-files-metadata') {
 			return new Response(
 				JSON.stringify({
 					data: [
