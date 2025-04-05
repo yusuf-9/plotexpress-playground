@@ -1,6 +1,0 @@
-- Persist workspace name in local storage - done
-- ensure plotting features work for all chart types - done
-- get axis limits functional - done
-- fix dynamic tailwind classes - done
-
-That should be it
