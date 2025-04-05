@@ -6,6 +6,10 @@ interface FileData {
 	data: ArrayBuffer;
 }
 
+export interface Env {
+	R2_BASE_URL: string;
+}
+
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		// Enable CORS
@@ -93,67 +97,73 @@ export default {
 							label: 'Stock Prices',
 							description: 'Daily open, high, low, close prices and trading volumes for popular tech stocks over the past month.',
 							category: 'Finance & Economics',
-							link: '',
+							link: env.R2_BASE_URL + '/stock_prices.json',
 						},
 						{
 							label: 'Inflation Rates',
 							description: 'Yearly inflation rates from 2010 to 2024 for major global economies.',
 							category: 'Finance & Economics',
-							link: '',
+							link: env.R2_BASE_URL + '/inflation_rates.json',
 						},
 						{
 							label: 'Cryptocurrency Trends',
 							description: 'Daily price trends for major cryptocurrencies like BTC and ETH over the past month.',
 							category: 'Finance & Economics',
-							link: '',
+							link: env.R2_BASE_URL + '/crypto_trends.json',
 						},
 						{
 							label: 'Population Growth',
 							description: 'Yearly population data from 2000 to 2024 for several major countries.',
 							category: 'Demographics & Society',
-							link: '',
+							link: env.R2_BASE_URL + '/population_growth.json',
 						},
 						{
 							label: 'Birth and Death Rates',
 							description: 'Annual birth and death rates from 2000 to 2024 across selected countries.',
 							category: 'Demographics & Society',
-							link: '',
+							link: env.R2_BASE_URL + '/birth_death_rates.json',
 						},
 						{
 							label: 'Average Temperature',
 							description: 'Average yearly temperature (in Celsius) in global cities from 2000 to 2024.',
 							category: 'Environment & Nature',
-							link: '',
+							link: env.R2_BASE_URL + '/avg_temperature.json',
 						},
 						{
 							label: 'Rainfall by Region',
 							description: 'Monthly rainfall data (in millimeters) for various geographic regions.',
 							category: 'Environment & Nature',
-							link: '',
+							link: env.R2_BASE_URL + '/rainfall.json',
 						},
 						{
 							label: 'Student Grades',
 							description: 'Simulated grades for students across four subjects: Math, Science, History, and English.',
 							category: 'Education & Learning',
-							link: '',
+							link: env.R2_BASE_URL + '/student_grades.json',
 						},
 						{
 							label: 'Test Scores Over Time',
 							description: 'Average test scores by subject from 2010 to 2024.',
 							category: 'Education & Learning',
-							link: '',
+							link: env.R2_BASE_URL + '/test_scores.json',
 						},
 						{
 							label: 'Fitness Tracking',
 							description: 'Simulated daily fitness stats for users, including steps, calories burned, and active minutes.',
 							category: 'Fun Ideas',
-							link: '',
+							link: env.R2_BASE_URL + '/fitness_tracking.json',
 						},
 						{
 							label: 'Music Listening Stats',
 							description: 'Daily music listening stats for users including number of songs played, minutes listened, and top genre.',
 							category: 'Fun Ideas',
-							link: '',
+							link: env.R2_BASE_URL + '/music_listening_stats.json',
+						},
+						{
+							label: 'Retail Transactions',
+							description: 'Simulated retail transactions for users across different categories.',
+							category: 'Large Files',
+							link: env.R2_BASE_URL + '/retail_transactions.json',
 						},
 					],
 				}),

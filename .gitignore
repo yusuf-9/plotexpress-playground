@@ -194,3 +194,4 @@ out
 .dev.vars
 .wrangler/
 dev-scripts/
+functions/wrangler.jsonc
