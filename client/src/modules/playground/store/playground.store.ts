@@ -6,6 +6,8 @@ import { DEFAULT_GRID_PANEL_DIMENSIONS } from "../constants";
 // types
 import { Chart, ChartConfig, FileData, ParsedData } from "../types";
 import { Workspace } from "@/modules/playground/types";
+import { TestFile } from "@/modules/playground/types/files";
+
 // utils
 import { generateUUID } from "@/common/utils";
 
@@ -32,7 +34,9 @@ export interface PlaygroundStore {
   updateFileData: (fileUUID: string, fileData: ParsedData) => void;
   setFiles: (files: FileData) => void;
   updateFileId: (newFileId: string, oldFileId: string) => void;
-  
+  testFiles: TestFile[];
+  setTestFiles: (testFiles: TestFile[]) => void;
+
   // editable file state
   fileToBeEditedId: string;
   setFileToBeEditedId: (fileUUID: string) => void;
@@ -137,6 +141,12 @@ const createPlaygroundStore = () => {
           return acc;
         }, {}),
       }));
+    },
+    testFiles: [],
+    setTestFiles: (testFiles: TestFile[]) => {
+      set({
+        testFiles: testFiles,
+      });
     },
 
     // editable chart state

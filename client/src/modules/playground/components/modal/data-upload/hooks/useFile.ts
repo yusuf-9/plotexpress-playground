@@ -1,11 +1,18 @@
-import { useCallback, useState } from "react";
-
-// lib
-import axios from "@/common/services/axios";
+import { useCallback, useEffect, useState } from "react";
 
 // types
 import { ParsedData } from "@/modules/playground/types";
+import { TestFile } from "@/modules/playground/types/files";
 import { FileUploadState } from "../types";
+
+// store
+import { useStore } from "@/modules/playground/contexts/store.context";
+
+// utils
+import { retryPromiseIfFails } from "@/common/utils";
+
+// lib
+import axios from "@/common/services/axios";
 
 type Props = {
   setParsedData: (data: ParsedData) => void;
@@ -14,6 +21,9 @@ type Props = {
 export default function useFile(props: Props) {
   const { setParsedData } = props;
 
+  const testFiles = useStore(store => store.testFiles);
+  const setTestFiles = useStore(store => store.setTestFiles);
+
   const [fileUploadState, setFileUploadState] = useState<FileUploadState>({
     isUploading: false,
     error: null,
@@ -21,6 +31,16 @@ export default function useFile(props: Props) {
     uploadProgress: 0,
     fileName: "",
   });
+  const [selectedTestFile, setSelectedTestFile] = useState<TestFile | null>(null);
+  const [testFileRequestState, setTestFileRequestState] = useState<{
+    loading: boolean;
+    error: string | null;
+  }>({
+    loading: false,
+    error: null,
+  });
+
+  const areTestFilesLoaded = testFiles.length > 0;
 
   const maxFileSizeInMB = 10 * 1024 * 1024;
 
@@ -89,8 +109,40 @@ export default function useFile(props: Props) {
     [handleFileUpload]
   );
 
+  useEffect(() => {
+    if (areTestFilesLoaded) return;
+
+    const fetchTestFiles = async () => {
+      try {
+        setTestFileRequestState(() => ({
+          loading: true,
+          error: null,
+        }));
+        const response = await retryPromiseIfFails(async () => await axios.get<TestFile[]>("/test-files-metadata"));
+        setTestFiles(response?.data?.data);
+      } catch (error) {
+        setTestFileRequestState(() => ({
+          loading: false,
+          error: error instanceof Error ? error.message : "Failed to fetch test files",
+        }));
+        console.error(error);
+      } finally {
+        setTestFileRequestState(prev => ({
+          ...prev,
+          loading: false,
+        }));
+      }
+    };
+    fetchTestFiles();
+  }, [areTestFilesLoaded, setTestFiles]);
+
   return {
     onFileDrop,
     fileUploadState,
+    selectedTestFile,
+    setSelectedTestFile,
+    testFiles,
+    loadingTestFiles: testFileRequestState.loading,
+    errorLoadingTestFiles: testFileRequestState.error,
   };
 }

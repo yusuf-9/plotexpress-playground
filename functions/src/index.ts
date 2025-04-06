@@ -17,16 +17,19 @@ export default {
 			return new Response(null, {
 				headers: {
 					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'POST, OPTIONS',
+					'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
 					'Access-Control-Allow-Headers': 'Content-Type',
 				},
 			});
 		}
 
 		// Health check endpoint
-		if (request.method === 'GET' && new URL(request.url).pathname === '/health') {
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/health') {
 			return new Response(JSON.stringify({ status: 'OK' }), {
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+				},
 			});
 		}
 
@@ -90,6 +93,7 @@ export default {
 
 		// Health check endpoint
 		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-files-metadata') {
+			console.log("got a req")
 			return new Response(
 				JSON.stringify({
 					data: [
@@ -168,10 +172,18 @@ export default {
 					],
 				}),
 				{
-					headers: { 'Content-Type': 'application/json' },
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+					},
 				}
 			);
 		}
-		return new Response('Not Found', { status: 404 });
+		return new Response('Not Found', { 
+			status: 404,
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+			},
+		});
 	},
 } satisfies ExportedHandler<Env>;

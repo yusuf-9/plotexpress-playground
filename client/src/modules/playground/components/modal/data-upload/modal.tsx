@@ -13,7 +13,7 @@ import useData from "./hooks/useData";
 import { useTheme } from "@/common/providers/theme";
 
 // utils
-import { cn } from "@/common/utils";  
+import { cn } from "@/common/utils";
 
 type Props = {
   onClose: () => void;
@@ -34,7 +34,7 @@ export default function DataUploadModal(props: Props) {
     shouldLoadExistingFile,
     defaultColumnProps,
   } = useData();
-  const { fileUploadState, onFileDrop } = useFile({ setParsedData });
+  const { fileUploadState, onFileDrop, selectedTestFile, setSelectedTestFile, testFiles, loadingTestFiles, errorLoadingTestFiles } = useFile({ setParsedData });
 
   const { error, isUploaded, isUploading, uploadProgress, fileName } = fileUploadState;
   const shouldRenderDataUploadSection = !fileUploadState.isUploaded && !shouldLoadExistingFile;
@@ -54,10 +54,11 @@ export default function DataUploadModal(props: Props) {
       >
         <div className="h-full flex flex-col">
           <ModalHeader />
-          <div className={cn(
-            "flex-grow flex flex-col ag-theme-quartz",
-            theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz",
-          )}
+          <div
+            className={cn(
+              "flex-grow flex flex-col ag-theme-quartz",
+              theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz"
+            )}
           >
             {shouldRenderDataUploadSection && (
               <DataUploadSection
@@ -66,6 +67,11 @@ export default function DataUploadModal(props: Props) {
                 isUploading={isUploading}
                 uploadProgress={uploadProgress}
                 onFileDrop={onFileDrop}
+                selectedTestFile={selectedTestFile}
+                setSelectedTestFile={setSelectedTestFile}
+                testFiles={testFiles}
+                loadingTestFiles={loadingTestFiles}
+                errorLoadingTestFiles={errorLoadingTestFiles}
               />
             )}
             {shouldRenderDataEditorSection && (
