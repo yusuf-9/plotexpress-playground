@@ -13,7 +13,7 @@ import useData from "./hooks/useData";
 import { useTheme } from "@/common/providers/theme";
 
 // utils
-import { cn } from "@/common/utils";  
+import { cn } from "@/common/utils";
 
 type Props = {
   onClose: () => void;
@@ -34,11 +34,32 @@ export default function DataUploadModal(props: Props) {
     shouldLoadExistingFile,
     defaultColumnProps,
   } = useData();
-  const { fileUploadState, onFileDrop } = useFile({ setParsedData });
 
-  const { error, isUploaded, isUploading, uploadProgress, fileName } = fileUploadState;
-  const shouldRenderDataUploadSection = !fileUploadState.isUploaded && !shouldLoadExistingFile;
-  const shouldRenderDataEditorSection = Boolean((fileUploadState.isUploaded && parsedData) || shouldLoadExistingFile);
+  const {
+    fileProcessingState,
+    onFileDrop,
+    selectedTestFile,
+    setSelectedTestFile,
+    testFiles,
+    loadingTestFiles,
+    errorLoadingTestFiles,
+    handleLoadTestFile
+  } = useFile({ setParsedData });
+
+  const handleNextButtonClick = () => {
+    if(!isProcessed && selectedTestFile) {
+      handleLoadTestFile();
+      return
+    }
+
+    handleSaveData(fileName);
+    onClose();
+  }
+
+  const { error, isProcessed, isProcessing, processingProgress, fileName, processType } = fileProcessingState;
+  const shouldRenderDataUploadSection = !isProcessed && !shouldLoadExistingFile;
+  const shouldRenderDataEditorSection = Boolean((isProcessed && parsedData) || shouldLoadExistingFile);
+  const disableNextButton = !selectedTestFile && !isProcessed && !shouldLoadExistingFile;
 
   return (
     <Dialog
@@ -54,18 +75,25 @@ export default function DataUploadModal(props: Props) {
       >
         <div className="h-full flex flex-col">
           <ModalHeader />
-          <div className={cn(
-            "flex-grow flex flex-col ag-theme-quartz",
-            theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz",
-          )}
+          <div
+            className={cn(
+              "flex-grow flex flex-col ag-theme-quartz",
+              theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz"
+            )}
           >
             {shouldRenderDataUploadSection && (
               <DataUploadSection
                 error={error}
-                isUploaded={isUploaded}
-                isUploading={isUploading}
-                uploadProgress={uploadProgress}
+                isProcessed={isProcessed}
+                isProcessing={isProcessing}
+                processingProgress={processingProgress}
                 onFileDrop={onFileDrop}
+                selectedTestFile={selectedTestFile}
+                setSelectedTestFile={setSelectedTestFile}
+                testFiles={testFiles}
+                loadingTestFiles={loadingTestFiles}
+                errorLoadingTestFiles={errorLoadingTestFiles}
+                processType={processType}
               />
             )}
             {shouldRenderDataEditorSection && (
@@ -80,11 +108,9 @@ export default function DataUploadModal(props: Props) {
           </div>
           <ModalFooter
             onClose={onClose}
-            disableSave={!fileUploadState.isUploaded && !shouldLoadExistingFile}
-            onSave={() => {
-              handleSaveData(fileName);
-              onClose();
-            }}
+            disableSave={disableNextButton}
+            onSave={handleNextButtonClick}
+            nextButtonText={shouldRenderDataEditorSection ? "Save" : "Next"}
           />
         </div>
       </DialogContent>

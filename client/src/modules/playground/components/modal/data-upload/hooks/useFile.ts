@@ -1,11 +1,19 @@
-import { useCallback, useState } from "react";
-
-// lib
-import axios from "@/common/services/axios";
+import { useCallback, useEffect, useState } from "react";
+import axiosBase from "axios"
 
 // types
 import { ParsedData } from "@/modules/playground/types";
-import { FileUploadState } from "../types";
+import { TestFile } from "@/modules/playground/types/files";
+import { FileProcessingState } from "../types";
+
+// store
+import { useStore } from "@/modules/playground/contexts/store.context";
+
+// utils
+import { retryPromiseIfFails } from "@/common/utils";
+
+// lib
+import axios from "@/common/services/axios";
 
 type Props = {
   setParsedData: (data: ParsedData) => void;
@@ -14,13 +22,27 @@ type Props = {
 export default function useFile(props: Props) {
   const { setParsedData } = props;
 
-  const [fileUploadState, setFileUploadState] = useState<FileUploadState>({
-    isUploading: false,
+  const testFiles = useStore(store => store.testFiles);
+  const setTestFiles = useStore(store => store.setTestFiles);
+
+  const [fileProcessingState, setFileProcessingState] = useState<FileProcessingState>({
+    isProcessing: false,
     error: null,
-    isUploaded: false,
-    uploadProgress: 0,
+    isProcessed: false,
+    processingProgress: 0,
     fileName: "",
+    processType: "upload",
   });
+  const [selectedTestFile, setSelectedTestFile] = useState<TestFile | null>(null);
+  const [testFileRequestState, setTestFileRequestState] = useState<{
+    loading: boolean;
+    error: string | null;
+  }>({
+    loading: false,
+    error: null,
+  });
+
+  const areTestFilesLoaded = testFiles.length > 0;
 
   const maxFileSizeInMB = 10 * 1024 * 1024;
 
@@ -50,7 +72,7 @@ export default function useFile(props: Props) {
       const response = await axios.post<ParsedData>("/parse", formData, {
         onUploadProgress: progressEvent => {
           const uploadProgress = Math.round((progressEvent.loaded / progressEvent.loaded) * 100);
-          setFileUploadState(prev => ({ ...prev, uploadProgress }));
+          setFileProcessingState(prev => ({ ...prev, processingProgress: uploadProgress }));
         },
       });
 
@@ -62,35 +84,111 @@ export default function useFile(props: Props) {
   const onFileDrop = useCallback(
     async (acceptedFiles: File[]) => {
       try {
-        setFileUploadState(prev => ({
+        setFileProcessingState(prev => ({
           ...prev,
           error: null,
-          isUploading: true,
-          isUploaded: false,
+          isProcessing: true,
+          isProcessed: false,
+          processType: "upload",
         }));
         await handleFileUpload(acceptedFiles[0]);
-        setFileUploadState(prev => ({
+        setFileProcessingState(prev => ({
           ...prev,
-          isUploading: false,
+          isProcessing: false,
           error: null,
-          isUploaded: true,
-          uploadProgress: 0,
+          isProcessed: true,
+          processingProgress: 0,
           fileName: acceptedFiles[0].name,
+          processType: "upload",
         }));
       } catch (error) {
-        setFileUploadState(prev => ({
+        setFileProcessingState(prev => ({
           ...prev,
           error: error instanceof Error ? error.message : "Failed to upload file",
-          isUploading: false,
-          isUploaded: false,
+          isProcessing: false,
+          isProcessed: false,
+          processType: "upload",
         }));
       }
     },
     [handleFileUpload]
   );
 
+  const handleLoadTestFile = useCallback(async () => {
+    try {
+      if (!selectedTestFile) {
+        throw new Error("No test file selected");
+      }
+
+      setFileProcessingState(prev => ({
+        ...prev,
+        isProcessing: true,
+        error: null,
+        isProcessed: false,
+        processingProgress: 0,
+        fileName: selectedTestFile?.label,
+        processType: "loadTestFile",
+      }));
+      const response = await retryPromiseIfFails(async () => await axiosBase.get<ParsedData>(selectedTestFile?.link, {
+        onDownloadProgress: progressEvent => {
+          const downloadProgress = Math.round((progressEvent.loaded / progressEvent.loaded) * 100);
+          setFileProcessingState(prev => ({ ...prev, processingProgress: downloadProgress }));
+        },
+      }));
+      setParsedData(response?.data);
+      setFileProcessingState(prev => ({
+        ...prev,
+        isProcessed: true,
+      }));
+    } catch (error) {
+      console.error(error);
+      setFileProcessingState(prev => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to load test file",
+      }));
+    } finally {
+      setFileProcessingState(prev => ({
+        ...prev,
+        isProcessing: false,
+      }));
+    }
+  }, [selectedTestFile, setParsedData]);
+
+  useEffect(() => {
+    if (areTestFilesLoaded) return;
+
+    const fetchTestFiles = async () => {
+      try {
+        setTestFileRequestState(() => ({
+          loading: true,
+          error: null,
+        }));
+        const response = await retryPromiseIfFails(async () => await axios.get<TestFile[]>("/test-files-metadata"));
+        setTestFiles(response?.data?.data);
+      } catch (error) {
+        setTestFileRequestState(() => ({
+          loading: false,
+          error: error instanceof Error ? error.message : "Failed to fetch test files",
+        }));
+        console.error(error);
+      } finally {
+        setTestFileRequestState(prev => ({
+          ...prev,
+          loading: false,
+        }));
+      }
+    };
+    fetchTestFiles();
+  }, [areTestFilesLoaded, setTestFiles]);
+
   return {
     onFileDrop,
-    fileUploadState,
+    fileProcessingState,
+    selectedTestFile,
+    setSelectedTestFile,
+    testFiles,
+    loadingTestFiles: testFileRequestState.loading,
+    errorLoadingTestFiles: testFileRequestState.error,
+    handleLoadTestFile,
   };
 }

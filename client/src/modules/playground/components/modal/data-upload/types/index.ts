@@ -1,7 +1,8 @@
-export type FileUploadState = {
-  isUploading: boolean;
-  uploadProgress: number;
+export type FileProcessingState = {
+  isProcessing: boolean;
   error: string | null;
-  isUploaded: boolean;
+  isProcessed: boolean;
   fileName: string;
+  processingProgress: number;
+  processType: "upload" | "loadTestFile";
 };
