@@ -5,10 +5,11 @@ type Props = {
   onClose: () => void;
   disableSave: boolean;
   onSave: () => void;
+  nextButtonText: string;
 };
 
 const DataModalFooter = (props: Props) => {
-  const { onClose, disableSave, onSave } = props;
+  const { onClose, disableSave, onSave, nextButtonText } = props;
   return (
     <div className="flex justify-end space-x-2 p-4 border-t">
       <Button
@@ -22,7 +23,7 @@ const DataModalFooter = (props: Props) => {
         variant="default"
         onClick={() => onSave()}
       >
-        Save
+        {nextButtonText}
       </Button>
     </div>
   );

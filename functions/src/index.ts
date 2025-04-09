@@ -93,7 +93,6 @@ export default {
 
 		// Health check endpoint
 		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-files-metadata') {
-			console.log("got a req")
 			return new Response(
 				JSON.stringify({
 					data: [
@@ -179,7 +178,7 @@ export default {
 				}
 			);
 		}
-		return new Response('Not Found', { 
+		return new Response('Not Found', {
 			status: 404,
 			headers: {
 				'Access-Control-Allow-Origin': '*',

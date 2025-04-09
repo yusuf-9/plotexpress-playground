@@ -23,34 +23,38 @@ import { Button } from "@/common/components/ui/button";
 
 // types
 import { TestFile } from "@/modules/playground/types/files";
-import { FileUploadState } from "../../types";
+import { FileProcessingState } from "../../types";
 
 type Props = {
-  error: FileUploadState["error"];
-  isUploading: FileUploadState["isUploading"];
-  isUploaded: FileUploadState["isUploaded"];
-  uploadProgress: FileUploadState["uploadProgress"];
+  error: FileProcessingState["error"];
+  isProcessing: FileProcessingState["isProcessing"];
+  isProcessed: FileProcessingState["isProcessed"];
+  processingProgress: FileProcessingState["processingProgress"];
   onFileDrop: (acceptedFiles: File[]) => Promise<void>;
   selectedTestFile: TestFile | null;
   setSelectedTestFile: (file: TestFile | null) => void;
   testFiles: TestFile[];
   loadingTestFiles: boolean;
   errorLoadingTestFiles: string | null;
+  processType: FileProcessingState["processType"];
 };
 
 const DataUploadSection = (props: Props) => {
   const {
     error,
-    isUploading,
-    isUploaded,
-    uploadProgress,
+    isProcessing,
+    isProcessed,
+    processingProgress,
     onFileDrop,
     selectedTestFile,
     setSelectedTestFile,
     testFiles,
     loadingTestFiles,
     errorLoadingTestFiles,
+    processType,
   } = props;
+  
+  console.log({error})
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: onFileDrop,
@@ -84,19 +88,19 @@ const DataUploadSection = (props: Props) => {
           className="border-2 flex-grow flex items-center justify-center border-dashed border-foreground/30 rounded-lg p-12 text-center cursor-pointer hover:border-primary transition-colors"
         >
           <input {...getInputProps()} />
-          {isUploading && (
+          {isProcessing && (
             <div className="space-y-2 w-full">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Uploading file...</span>
-                <span className="text-sm font-medium">{uploadProgress?.toString()}%</span>
+                <span className="text-sm font-medium">{processType === "upload" ? "Processing file..." : "Loading test file..."}</span>
+                <span className="text-sm font-medium">{processingProgress?.toString()}%</span>
               </div>
               <Progress
-                value={uploadProgress}
+                value={processingProgress}
                 className="w-full"
               />
             </div>
           )}
-          {!isUploading && !isUploaded && (
+          {!isProcessed && !isProcessing && (
             <div className="text-foreground">
               <Upload className="mx-auto h-12 w-12" />
               <p className="mt-2 text-lg">Drag &lsquo;n&rsquo; drop a file here, or click to select a file</p>
