@@ -2,7 +2,7 @@ import { StoreApi, UseBoundStore } from "zustand";
 
 // types
 import { PlaygroundStore } from "../../store/playground.store";
-import { Chart, ChartConfig, ParsedData } from "../../types";
+import { Chart, BaseChartConfig, ParsedData } from "../../types";
 
 // services
 import IndexedDBService from "../indexed-db";
@@ -76,7 +76,7 @@ export default class DataManager {
    * Creates a new chart in the store
    * Add the chart to the indexedDB
    */
-  public async addChart(newChartConfig: ChartConfig) {
+  public async addChart(newChartConfig: BaseChartConfig) {
     const addChartInStore = this.storeRef.getState().addChart;
     const newChart = addChartInStore(newChartConfig);
     this.indexedDbManager.upsertData(INDEXED_DB_STORES.CHARTS, {

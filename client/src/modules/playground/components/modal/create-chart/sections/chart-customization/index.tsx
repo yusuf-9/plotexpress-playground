@@ -4,6 +4,7 @@ import { memo, useCallback, useState } from "react";
 // sections
 import GeneralSettings from "./sections/general-settings";
 import AxisSettings from "./sections/axis-settings";
+import SeriesSettings from "./sections/series-settings";
 
 // constants
 import { SETTING_CATEGORIES } from "./constants";
@@ -16,11 +17,12 @@ import useDebouncedCallback from "@/common/hooks/use-debounced-callback";
 
 type Props = {
   chartSettings: Chart["chartSettings"];
+  traces: Chart['tracesConfig']
   setChartSettings: (settings: Chart["chartSettings"]) => void;
 };
 
 const ChartCustomizationSection = (props: Props) => {
-  const { chartSettings, setChartSettings } = props;
+  const { chartSettings, setChartSettings, traces } = props;
 
   const [selectedSettingsCategory, setSelectedSettingsCategory] = useState<
     (typeof SETTING_CATEGORIES)[keyof typeof SETTING_CATEGORIES]
@@ -71,6 +73,12 @@ const ChartCustomizationSection = (props: Props) => {
             <AxisSettings
               chartSettings={chartSettings}
               onSettingChange={debouncedSetChartSettings}
+            />
+          )}
+          {selectedSettingsCategory.value === SETTING_CATEGORIES.SERIES.value && (
+            <SeriesSettings
+              onTraceSettingsChange={() => {}}
+              traces={traces}
             />
           )}
         </div>

@@ -1,11 +1,14 @@
-import { memo } from "react";
-
-// components
-import { Input } from "@/common/components/ui/input";
-import { Label } from "@/common/components/ui/label";
+import { memo, useCallback, useMemo } from "react";
 
 // types
 import { Chart } from "@/modules/playground/types";
+
+// constants
+import { DEFAULT_AXIS_SETTING_OPTIONS } from "../../constants";
+
+// utils
+import { renderAxisInput, renderInput } from "../../utils/render-inputs";
+import { cn } from "@/common/utils";
 
 interface Props {
   chartSettings: Chart["chartSettings"];
@@ -15,154 +18,71 @@ interface Props {
 const AxisSettings: React.FC<Props> = props => {
   const { chartSettings, onSettingChange } = props;
 
-  const updateAxisLimit = (axis: "x" | "y", limit: "min" | "max", value: string) => {
-    if (axis === "x") {
-      onSettingChange("xAxisLimits", {
-        ...chartSettings.xAxisLimits,
+  const updateAxisLimit = useCallback(
+    (axis: "x" | "y", limit: "min" | "max", value: string) => {
+      if (axis === "x") {
+        onSettingChange("xAxisLimits", {
+          ...chartSettings.xAxisLimits,
+          [limit]: value,
+        });
+        return;
+      }
+
+      onSettingChange("yAxisLimits", {
+        ...chartSettings.yAxisLimits,
         [limit]: value,
       });
-      return;
-    }
-
-    onSettingChange("yAxisLimits", {
-      ...chartSettings.yAxisLimits,
-      [limit]: value,
-    });
-  };
-
-  return (
-    <div className="flex-grow flex overflow-y-auto">
-      <div className="flex-1 flex flex-col space-y-4 pl-3 pr-6 border-r-2 border-secondary">
-        <div className="flex items-center gap-5 justify-between">
-          <Label
-            htmlFor="x-axis-label"
-            className="text-sm font-medium"
-          >
-            X axis label
-          </Label>
-          <Input
-            type="text"
-            id="x-axis-label"
-            placeholder="X axis label"
-            className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={chartSettings.xAxisLabel}
-            onChange={e => {
-              onSettingChange("xAxisLabel", e.target.value);
-            }}
-          />
-        </div>
-        <div className="flex items-center gap-5 justify-between">
-          <Label
-            htmlFor="x-axis-limits"
-            className="text-sm font-medium"
-          >
-            X axis limits
-          </Label>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="y-axis-limits-min"
-                className="text-sm font-medium"
-              >
-                Min
-              </Label>
-              <Input
-                type="text"
-                placeholder="Min"
-                className="flex-1 border-b-2 border-secondary rounded-md p-2"
-                defaultValue={chartSettings.xAxisLimits?.min}
-                onChange={e => {
-                  updateAxisLimit("x", "min", e.target.value);
-                }}
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="y-axis-limits-min"
-                className="text-sm font-medium"
-              >
-                Max
-              </Label>
-              <Input
-                type="text"
-                placeholder="Max"
-                className="flex-1 border-b-2 border-secondary rounded-md p-2"
-                defaultValue={chartSettings.xAxisLimits?.max}
-                onChange={e => {
-                  updateAxisLimit("x", "max", e.target.value);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex-1 flex flex-col space-y-4 pl-3 pr-6">
-        <div className="flex items-center gap-5 justify-between">
-          <Label
-            htmlFor="y-axis-label"
-            className="text-sm font-medium"
-          >
-            Y axis label
-          </Label>
-          <Input
-            type="text"
-            id="y-axis-label"
-            placeholder="Y axis label"
-            className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={chartSettings.yAxisLabel}
-            onChange={e => {
-              onSettingChange("yAxisLabel", e.target.value);
-            }}
-          />
-        </div>
-        <div className="flex items-center gap-5 justify-between">
-          <Label
-            htmlFor="y-axis-limits"
-            className="text-sm font-medium"
-          >
-            Y axis limits
-          </Label>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="y-axis-limits-min"
-                className="text-sm font-medium"
-              >
-                Min
-              </Label>
-              <Input
-                type="number"
-                placeholder="Min"
-                className="flex-1 border-b-2 border-secondary rounded-md p-2"
-                defaultValue={chartSettings.yAxisLimits?.min}
-                onChange={e => {
-                  updateAxisLimit("y", "min", e.target.value);
-                }}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="y-axis-limits-min"
-                className="text-sm font-medium"
-              >
-                Max
-              </Label>
-              <Input
-                type="number"
-                placeholder="Max"
-                className="flex-1 border-b-2 border-secondary rounded-md p-2"
-                defaultValue={chartSettings.yAxisLimits?.max}
-                onChange={e => {
-                  updateAxisLimit("y", "max", e.target.value);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    },
+    [chartSettings.xAxisLimits, chartSettings.yAxisLimits, onSettingChange]
   );
+
+  const axisSettingInputsJsx = useMemo(() => {
+    return Object.entries(DEFAULT_AXIS_SETTING_OPTIONS).map(([axis, axisInputs], index) => {
+      const inputsOfAxisJsx = axisInputs.map(inputConfig => {
+        if (inputConfig.inputType === "min/max") {
+          const inputConfigWithDefaultValues = {
+            ...inputConfig,
+            defaultValueMin:
+              (chartSettings[inputConfig.id as keyof Chart["chartSettings"]] as { min: string; max: string })?.min ||
+              undefined,
+            defaultValueMax:
+              (chartSettings[inputConfig.id as keyof Chart["chartSettings"]] as { min: string; max: string })?.max ||
+              undefined,
+            onChangeMin: (value: any) => {
+              updateAxisLimit(axis as "x" | "y", "min", value);
+            },
+            onChangeMax: (value: any) => {
+              updateAxisLimit(axis as "x" | "y", "max", value);
+            },
+          };
+
+          return renderAxisInput(inputConfigWithDefaultValues);
+        }
+
+        // @ts-expect-error - TODO: fix this
+        return renderInput({
+          ...inputConfig,
+          defaultValue: chartSettings[inputConfig.id as keyof Chart["chartSettings"]],
+          onChangeValue: (value: any) => {
+            onSettingChange(inputConfig.id as keyof Chart["chartSettings"], value);
+          },
+        });
+      });
+
+      return (
+        <div
+          className={cn(
+            "flex-1 flex flex-col space-y-4 pl-3 pr-6 border-secondary",
+            index < Object.keys(DEFAULT_AXIS_SETTING_OPTIONS).length - 1 ? "border-r-2" : ""
+          )}
+        >
+          {inputsOfAxisJsx}
+        </div>
+      );
+    });
+  }, [chartSettings, onSettingChange, updateAxisLimit]);
+
+  return <div className="flex-grow flex overflow-y-auto">{axisSettingInputsJsx}</div>;
 };
 
 export default memo(AxisSettings);

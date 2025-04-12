@@ -13,7 +13,7 @@ import useDebouncedCallback from "@/common/hooks/use-debounced-callback";
 import { cn } from "@/common/utils";
 
 // Types
-import { AxisTypes, FileData, TraceConfig } from "@/modules/playground/types";
+import { AxisTypes, FileData, BaseTraceConfig } from "@/modules/playground/types";
 
 // Icons
 import { Edit, Trash2, Check } from "lucide-react";
@@ -22,12 +22,12 @@ type Props = {
   activeAxis: AxisTypes;
   axisOptions: AxisTypes[];
   onAxisOptionClick: (axisOption: AxisTypes) => void;
-  traces: TraceConfig[];
+  traces: BaseTraceConfig[];
   uploadedFiles: FileData;
   selectedTraceIndex: number | null;
   onTraceEdit: (traceIndex: number | null) => void;
   onTraceDelete: (traceIndex: number) => void;
-  onTraceSettingsItemEdit: (newValue: string, traceIndex: number, item: keyof TraceConfig["settings"]) => void;
+  onTraceSettingsItemEdit: (newValue: string, traceIndex: number, item: keyof BaseTraceConfig["settings"]) => void;
 };
 
 const DataSummary = (props: Props) => {

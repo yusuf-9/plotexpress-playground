@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { DEFAULT_GRID_PANEL_DIMENSIONS } from "../constants";
 
 // types
-import { Chart, ChartConfig, FileData, ParsedData } from "../types";
+import { Chart, FileData, ParsedData, FinalChartConfig } from "../types";
 import { Workspace } from "@/modules/playground/types";
 import { TestFile } from "@/modules/playground/types/files";
 
@@ -18,7 +18,7 @@ export interface PlaygroundStore {
 
   // chartState
   charts: Chart[];
-  addChart: (chart: ChartConfig) => Chart;
+  addChart: (chart: FinalChartConfig) => Chart;
   removeChart: (i: string) => void;
   updateChart: (i: string, chart: Chart) => void;
   setCharts: (charts: Chart[]) => void;
