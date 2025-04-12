@@ -17,7 +17,7 @@ type Props = {
     traceIndex: number
   ) => void;
   deleteTrace: (traceIndex: number) => void;
-  editTraceSettingsItem: (newValue: string, traceIndex: number, item: keyof BaseTraceConfig["settings"]) => void;
+  editTraceSettingsItem: (item: keyof BaseTraceConfig["settings"], newValue: string, traceIndex: number,) => void;
 };
 
 const DataSelectSection = (props: Props) => {
@@ -41,7 +41,7 @@ const DataSelectSection = (props: Props) => {
   });
 
   const { isFileColumnCollapsed, setIsFileColumnCollapsed } = useDataSelectUi();
-  
+
   return (
     <>
       <DataSummary

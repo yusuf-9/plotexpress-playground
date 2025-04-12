@@ -27,7 +27,7 @@ type Props = {
   selectedTraceIndex: number | null;
   onTraceEdit: (traceIndex: number | null) => void;
   onTraceDelete: (traceIndex: number) => void;
-  onTraceSettingsItemEdit: (newValue: string, traceIndex: number, item: keyof BaseTraceConfig["settings"]) => void;
+  onTraceSettingsItemEdit: (item: keyof BaseTraceConfig["settings"], newValue: string, traceIndex: number,) => void;
 };
 
 const DataSummary = (props: Props) => {
@@ -69,11 +69,11 @@ const DataSummary = (props: Props) => {
               type="color"
               className="w-4 h-4 aspect-square flex-shrink-0 rounded-full cursor-pointer"
               defaultValue={traceConfig.settings.color}
-              onChange={e => debouncedOnTraceSettingsItemEdit(e.target.value, index, "color")}
+              onChange={e => debouncedOnTraceSettingsItemEdit("color", e.target.value, index,)}
             />
             <Input
               defaultValue={traceConfig.settings.name}
-              onChange={e => debouncedOnTraceSettingsItemEdit(e.target.value, index, "name")}
+              onChange={e => debouncedOnTraceSettingsItemEdit("name", e.target.value, index,)}
               className="font-medium bg-transparent border-none p-0 focus:ring-0"
             />
           </div>

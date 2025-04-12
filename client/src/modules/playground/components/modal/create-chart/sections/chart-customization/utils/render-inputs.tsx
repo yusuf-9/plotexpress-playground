@@ -55,12 +55,21 @@ export function renderInput(inputConfig: {
             {inputConfig.label}
           </Label>
           <Input
-            type="text"
+            type="number"
             id={inputConfig.id}
             placeholder={inputConfig.placeholder}
             className="flex-1 border-b-2 border-secondary rounded-md p-2"
             defaultValue={inputConfig.defaultValue}
             onChange={e => {
+              // Ensure value doesn't exceed max if specified
+              const maxValue = inputConfig.inputProps?.max;
+              if (maxValue !== undefined) {
+                const value = Math.min(Number(e.target.value), Number(maxValue));
+                inputConfig.onChangeValue(value.toString());
+                // Update input value to reflect clamped value
+                e.target.value = value.toString();
+                return;
+              }
               inputConfig.onChangeValue(e.target.value);
             }}
             {...inputConfig.inputProps}

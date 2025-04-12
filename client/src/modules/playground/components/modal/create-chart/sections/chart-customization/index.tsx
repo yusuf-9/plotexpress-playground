@@ -10,19 +10,24 @@ import SeriesSettings from "./sections/series-settings";
 import { SETTING_CATEGORIES } from "./constants";
 
 // types
-import { Chart } from "@/modules/playground/types";
+import { FinalChartConfig, Chart } from "@/modules/playground/types";
 
 // hooks
 import useDebouncedCallback from "@/common/hooks/use-debounced-callback";
 
 type Props = {
   chartSettings: Chart["chartSettings"];
-  traces: Chart['tracesConfig']
+  traces: Chart["tracesConfig"];
   setChartSettings: (settings: Chart["chartSettings"]) => void;
+  onTraceSettingChange: (
+    item: keyof FinalChartConfig["tracesConfig"][number]["settings"],
+    newValue: string,
+    traceIndex: number
+  ) => void;
 };
 
 const ChartCustomizationSection = (props: Props) => {
-  const { chartSettings, setChartSettings, traces } = props;
+  const { chartSettings, setChartSettings, traces, onTraceSettingChange } = props;
 
   const [selectedSettingsCategory, setSelectedSettingsCategory] = useState<
     (typeof SETTING_CATEGORIES)[keyof typeof SETTING_CATEGORIES]
@@ -77,7 +82,7 @@ const ChartCustomizationSection = (props: Props) => {
           )}
           {selectedSettingsCategory.value === SETTING_CATEGORIES.SERIES.value && (
             <SeriesSettings
-              onTraceSettingsChange={() => {}}
+              onTraceSettingChange={onTraceSettingChange}
               traces={traces}
             />
           )}

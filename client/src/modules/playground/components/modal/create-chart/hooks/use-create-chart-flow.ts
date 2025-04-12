@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { nanoid } from "nanoid";
 
 // constants
-import { FinalChartConfig, BaseChartConfig, BaseTraceConfig } from "@/modules/playground/types";
+import { FinalChartConfig, BaseChartConfig } from "@/modules/playground/types";
 import { CHART_TRACE_CONSTRAINTS_MAP } from "@/modules/playground/constants/charts";
 import { DEFAULT_COLOR_MAP } from "@/modules/playground/constants/colors";
 import { STEPS } from "../constants";
@@ -105,7 +105,7 @@ export default function useCreateChartFlow(props: Props) {
   }, []);
 
   const addOrUpdateTrace = useCallback(
-    (traceConfig: { x?: BaseTraceConfig["x"]; y?: BaseTraceConfig["y"] }, traceIndex: number) => {
+    (traceConfig: { x?: FinalChartConfig["tracesConfig"][number]["x"]; y?: FinalChartConfig["tracesConfig"][number]["y"] }, traceIndex: number) => {
       if (!chartType) return;
 
       setChartConfig(prev => {
@@ -131,18 +131,16 @@ export default function useCreateChartFlow(props: Props) {
           case traceIndex > -1 && traceIndex < prev.tracesConfig.length:
             return {
               ...prev,
-              tracesConfig: prev.tracesConfig.reduce((acc: Array<BaseTraceConfig>, traceConfigObject, index) => {
+              tracesConfig: prev.tracesConfig.map((traceConfigObject, index) => {
                 if (traceIndex !== index) {
-                  acc.push(traceConfigObject);
-                  return acc;
+                  return traceConfigObject;
                 }
 
-                acc.push({
+                return {
                   ...traceConfigObject,
                   ...traceConfig,
-                });
-                return acc;
-              }, []),
+                };
+              }),
             };
           default:
             return prev;
@@ -153,7 +151,6 @@ export default function useCreateChartFlow(props: Props) {
   );
 
   const deleteTrace = useCallback((traceIndex: number) => {
-    console.log("traceIndex", traceIndex);
     setChartConfig(prev => {
       if (traceIndex < 0 || traceIndex >= prev.tracesConfig.length) {
         return prev;
@@ -169,7 +166,7 @@ export default function useCreateChartFlow(props: Props) {
   }, []);
 
   const editTraceSettingsItem = useCallback(
-    (newValue: string, traceIndex: number, item: keyof BaseTraceConfig["settings"]) => {
+    (item: keyof FinalChartConfig["tracesConfig"][number]["settings"], newValue: string, traceIndex: number,) => {
       setChartConfig(prev => {
         if (traceIndex < 0 || traceIndex >= prev.tracesConfig.length) {
           return prev;
@@ -177,21 +174,19 @@ export default function useCreateChartFlow(props: Props) {
 
         return {
           ...prev,
-          tracesConfig: prev.tracesConfig.reduce((acc: Array<BaseTraceConfig>, traceConfigObject, index) => {
+          tracesConfig: prev.tracesConfig.map((traceConfigObject, index) => {
             if (traceIndex !== index) {
-              acc.push(traceConfigObject);
-              return acc;
+              return traceConfigObject;
             }
 
-            acc.push({
+            return {
               ...traceConfigObject,
               settings: {
                 ...traceConfigObject.settings,
                 [item]: newValue,
               },
-            });
-            return acc;
-          }, []),
+            };
+          }),
         };
       });
     },

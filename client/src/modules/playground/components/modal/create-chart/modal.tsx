@@ -119,6 +119,7 @@ export default function CreateChartModal(props: Props) {
                       chartSettings={chartSettings}
                       setChartSettings={handleChartSettingsChange}
                       traces={completeTraces}
+                      onTraceSettingChange={editTraceSettingsItem}
                     />
                   )
                 }

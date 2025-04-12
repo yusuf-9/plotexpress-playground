@@ -1,18 +1,18 @@
 import { memo, useState, useMemo } from "react";
 
 // types
-import { Chart } from "@/modules/playground/types";
+import { FinalChartConfig, Chart } from "@/modules/playground/types";
 import { Input } from "@/common/components/ui/input";
 import { DEFAULT_SERIES_SETTING_OPTIONS } from "../../constants";
 import { renderInput } from "../../utils/render-inputs";
 
 interface Props {
-  onTraceSettingsChange: (item: keyof Chart["tracesConfig"][number]["settings"], value: any) => void;
+  onTraceSettingChange: (item: keyof FinalChartConfig["tracesConfig"][number]["settings"], newValue: string, traceIndex: number,) => void;
   traces: Chart["tracesConfig"];
 }
 
 const SeriesSettings: React.FC<Props> = props => {
-  const { traces } = props;
+  const { traces, onTraceSettingChange } = props;
 
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,9 +21,15 @@ const SeriesSettings: React.FC<Props> = props => {
     return traces.filter(trace => trace.settings.name.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [traces, searchQuery]);
 
-  const selectedTrace = useMemo(() => traces.find(trace => trace.id === selectedTraceId), [traces, selectedTraceId]);
+  const [selectedTrace, selectedTraceIndex] = useMemo(() => {
+    const selectedTraceIndex = traces.findIndex(trace => trace.id === selectedTraceId)
+    const selectedTrace = traces[selectedTraceIndex];
 
-  console.log({ traces, selectedTraceId });
+    return [
+      selectedTrace,
+      selectedTraceIndex
+    ]
+  }, [traces, selectedTraceId]);
 
   return (
     <div className="flex-grow flex overflow-y-auto">
@@ -72,7 +78,7 @@ const SeriesSettings: React.FC<Props> = props => {
               ...inputConfig,
               defaultValue: selectedTrace.settings[inputConfig.id as keyof Chart["tracesConfig"][number]["settings"]],
               onChangeValue: (value: any) =>
-                props.onTraceSettingsChange(inputConfig.id as keyof Chart["tracesConfig"][number]["settings"], value),
+                onTraceSettingChange(inputConfig.id as keyof Chart["tracesConfig"][number]["settings"], value, selectedTraceIndex),
             };
 
             return renderInput(inputConfigWithDefaults);
