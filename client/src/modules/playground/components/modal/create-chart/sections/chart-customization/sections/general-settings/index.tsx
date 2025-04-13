@@ -3,22 +3,24 @@ import { memo, useMemo } from "react";
 // types
 import { Chart } from "@/modules/playground/types";
 
-// constants
-import { DEFAULT_GENERAL_SETTING_OPTIONS } from "../../constants";
-
 // utils
 import { renderInput } from "../../utils/render-inputs";
+
+// constants
+import { GENERAL_CHART_SETTINGS_INPUT_CONFIG_MAP } from "@/modules/playground/constants/charts";
 
 interface Props {
   chartSettings: Chart["chartSettings"];
   onSettingChange: (item: keyof Chart["chartSettings"], value: any) => void;
+  settingInputsConfig:
+    | (typeof GENERAL_CHART_SETTINGS_INPUT_CONFIG_MAP)[keyof typeof GENERAL_CHART_SETTINGS_INPUT_CONFIG_MAP];
 }
 
 const GeneralSettings: React.FC<Props> = props => {
-  const { chartSettings, onSettingChange } = props;
+  const { chartSettings, onSettingChange, settingInputsConfig } = props;
 
   const generalSettingInputsJsx = useMemo(() => {
-    const inputsConfig = DEFAULT_GENERAL_SETTING_OPTIONS.map(input => ({
+    const inputsConfig = settingInputsConfig.map(input => ({
       ...input,
       defaultValue: chartSettings[input.id as keyof Chart["chartSettings"]],
       onChangeValue: (value: any) => {
@@ -27,7 +29,7 @@ const GeneralSettings: React.FC<Props> = props => {
     }));
 
     return inputsConfig.map(input => renderInput(input));
-  }, [chartSettings, onSettingChange]);
+  }, [chartSettings, onSettingChange, settingInputsConfig]);
 
   return (
     <div className="flex-grow flex overflow-y-auto">

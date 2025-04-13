@@ -1,22 +1,24 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useMemo, useCallback } from "react";
+import { cn } from "@/common/utils";
 
 // types
 import { Chart } from "@/modules/playground/types";
 
-// constants
-import { DEFAULT_AXIS_SETTING_OPTIONS } from "../../constants";
-
 // utils
-import { renderAxisInput, renderInput } from "../../utils/render-inputs";
-import { cn } from "@/common/utils";
+import { renderInput } from "../../utils/render-inputs";
+import { renderAxisInput } from "../../utils/render-inputs";
+
+// constants
+import { CHART_AXIS_SETTINGS_INPUT_CONFIGS_MAP } from "@/modules/playground/constants/charts";
 
 interface Props {
   chartSettings: Chart["chartSettings"];
   onSettingChange: (item: keyof Chart["chartSettings"], value: any) => void;
+  settingInputsConfig: (typeof CHART_AXIS_SETTINGS_INPUT_CONFIGS_MAP)[keyof typeof CHART_AXIS_SETTINGS_INPUT_CONFIGS_MAP];
 }
 
 const AxisSettings: React.FC<Props> = props => {
-  const { chartSettings, onSettingChange } = props;
+  const { chartSettings, onSettingChange, settingInputsConfig } = props;
 
   const updateAxisLimit = useCallback(
     (axis: "x" | "y", limit: "min" | "max", value: string) => {
@@ -37,7 +39,7 @@ const AxisSettings: React.FC<Props> = props => {
   );
 
   const axisSettingInputsJsx = useMemo(() => {
-    return Object.entries(DEFAULT_AXIS_SETTING_OPTIONS).map(([axis, axisInputs], index) => {
+    return Object.entries(settingInputsConfig).map(([axis, axisInputs], index) => {
       const inputsOfAxisJsx = axisInputs.map(inputConfig => {
         if (inputConfig.inputType === "min/max") {
           const inputConfigWithDefaultValues = {
@@ -59,7 +61,7 @@ const AxisSettings: React.FC<Props> = props => {
           return renderAxisInput(inputConfigWithDefaultValues);
         }
 
-        // @ts-expect-error - TODO: fix this
+        // @ts-expect-error - TS is acting dumb here ngl
         return renderInput({
           ...inputConfig,
           defaultValue: chartSettings[inputConfig.id as keyof Chart["chartSettings"]],
@@ -71,16 +73,17 @@ const AxisSettings: React.FC<Props> = props => {
 
       return (
         <div
+          key={axis}
           className={cn(
             "flex-1 flex flex-col space-y-4 pl-3 pr-6 border-secondary",
-            index < Object.keys(DEFAULT_AXIS_SETTING_OPTIONS).length - 1 ? "border-r-2" : ""
+            index < Object.keys(settingInputsConfig).length - 1 ? "border-r-2" : ""
           )}
         >
           {inputsOfAxisJsx}
         </div>
       );
     });
-  }, [chartSettings, onSettingChange, updateAxisLimit]);
+  }, [chartSettings, onSettingChange, updateAxisLimit, settingInputsConfig]);
 
   return <div className="flex-grow flex overflow-y-auto">{axisSettingInputsJsx}</div>;
 };
