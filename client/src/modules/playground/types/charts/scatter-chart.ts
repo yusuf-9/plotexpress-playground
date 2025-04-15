@@ -1,11 +1,11 @@
 import { BaseChartConfig } from "./base-chart";
 
 export type ScatterChartSettings = {
-  scatterSettingDummy: boolean;
 };
 
 export type ScatterTraceSettings = {
-  scatterTraceDummy: boolean;
+  markerWidth: number;
+  markerType: string;
 };
 
 export type ScatterChartConfig = BaseChartConfig<ScatterChartSettings, ScatterTraceSettings>;

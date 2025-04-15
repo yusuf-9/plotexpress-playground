@@ -87,8 +87,8 @@ export const DEFAULT_CHART_GENERAL_SETTINGS_INPUT_CONFIG = [
     {
       id: DEFAULT_SERIES_SETTING_OPTION_KEYS.opacity,
       label: "Series opacity",
-      inputType: "number",
-      placeholder: "Enter series opacity",
+      inputType: "slider",
+      placeholder: "Series opacity",
       inputProps: {
         min: 0,
         max: 1,

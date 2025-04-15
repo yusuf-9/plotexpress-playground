@@ -1,6 +1,7 @@
 import { Input } from "@/common/components/ui/input";
 import { Label } from "@/common/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/common/components/ui/select";
+import { Slider } from "@/common/components/ui/slider";
 import { Switch } from "@/common/components/ui/switch";
 
 export function renderInput(inputConfig: {
@@ -107,7 +108,7 @@ export function renderInput(inputConfig: {
             htmlFor="legend-position-select"
             className="text-sm font-medium "
           >
-            Legend position
+            {inputConfig.label}
           </Label>
           <Select
             defaultValue={inputConfig.defaultValue}
@@ -156,6 +157,29 @@ export function renderInput(inputConfig: {
               inputConfig.onChangeValue(e.target.value);
             }}
             {...inputConfig.inputProps}
+          />
+        </div>
+      );
+    case "slider":
+      return (
+        <div
+          className="flex items-center gap-5 justify-between"
+          key={inputConfig.id}
+        >
+          <Label
+            htmlFor={inputConfig.id}
+            className="text-sm font-medium"
+          >
+            {inputConfig.label}
+          </Label>
+          <Slider
+            id={inputConfig.id}
+            defaultValue={[inputConfig.defaultValue]}
+            onValueCommit={value => {
+              inputConfig.onChangeValue(value);
+            }}
+            min={Number( inputConfig.inputProps?.min ?? 0 )}
+            max={Number( inputConfig.inputProps?.max ?? 100 )}
           />
         </div>
       );

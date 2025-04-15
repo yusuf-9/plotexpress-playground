@@ -1,11 +1,13 @@
 import { BaseChartConfig } from "./base-chart";
 
 export type TimeChartSettings = {
-  timeSettingDummy: boolean;
 };
 
 export type TimeTraceSettings = {
-  timeTraceDummy: boolean;
+  traceWidth: number;
+  markerVisibility: boolean;
+  markerWidth: number;
+  markerType: string;
 };
 
 export type TimeChartConfig = BaseChartConfig<TimeChartSettings, TimeTraceSettings>;
