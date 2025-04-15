@@ -72,6 +72,18 @@ export default class DataManager {
   }
 
   /**
+   * Public method for deleting all added files
+   * Remove the files from the store
+   * Delete the files from the indexedDB
+   */
+  public async deleteAllFiles(): Promise<void> {
+    const setFilesInStore = this.storeRef.getState().setFiles;
+
+    this.indexedDbManager.clearDataInStore(INDEXED_DB_STORES.FILES);
+    setFilesInStore({})
+  }
+
+  /**
    * Public method to handle chart creation
    * Creates a new chart in the store
    * Add the chart to the indexedDB
@@ -114,5 +126,17 @@ export default class DataManager {
     const removeChartFromStore = this.storeRef.getState().removeChart;
     removeChartFromStore(chartId);
     this.indexedDbManager.deleteData(INDEXED_DB_STORES.CHARTS, chartId);
+  }
+
+  /**
+   * Public method to delete all charts from workspace
+   * Deletes the charts from the store
+   * Deletes the charts from the indexedDB
+   */
+  public async deleteAllCharts() {
+    const setChartsInStore = this.storeRef.getState().setCharts;
+
+    this.indexedDbManager.clearDataInStore(INDEXED_DB_STORES.CHARTS);
+    setChartsInStore([])
   }
 }

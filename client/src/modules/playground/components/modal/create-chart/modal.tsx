@@ -48,6 +48,7 @@ export default function CreateChartModal(props: Props) {
     disableNextStep,
     chartSettings,
     handleChartSettingsChange,
+    setEditChartId
   } = useCreateChartFlow({ onClose });
 
   const { chartAPI, setChartPreviewRef } = useChartPreview();
@@ -79,7 +80,10 @@ export default function CreateChartModal(props: Props) {
   return (
     <Dialog
       open={true}
-      onOpenChange={() => onClose()}
+      onOpenChange={() => {
+        setEditChartId('')
+        onClose()
+      }}
     >
       <DialogContent className="!w-[90vw] !max-w-[1800px] h-[90vh] flex flex-col p-0 overflow-hidden gap-0">
         <TooltipProvider>

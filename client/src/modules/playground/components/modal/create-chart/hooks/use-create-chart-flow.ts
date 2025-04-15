@@ -24,6 +24,7 @@ export default function useCreateChartFlow(props: Props) {
   const { dataManager } = useDependencyInjector();
 
   const chartToBeEditedId = useStore(store => store.chartToBeEditedId);
+  const setEditChartId = useStore(store => store.setChartToBeEditedId);
   const chartToBeEdited = useStore(store => store.charts?.find(chart => chart.i === chartToBeEditedId));
 
   const [chartConfig, setChartConfig] = useState<{
@@ -193,6 +194,7 @@ export default function useCreateChartFlow(props: Props) {
     []
   );
 
+
   const handleStepChange = useCallback((newStep: number) => {
     setCurrentStep(newStep);
   }, []);
@@ -242,5 +244,6 @@ export default function useCreateChartFlow(props: Props) {
     handleLoadPreviousStep,
     handleLoadNextStep,
     checkIfStepIsDisabled,
+    setEditChartId
   };
 }

@@ -21,8 +21,8 @@ export default class IndexedDBService {
    */
   private initialize(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if(typeof window === "undefined") return;
-      
+      if (typeof window === "undefined") return;
+
       const request = indexedDB.open(INDEXED_DB_NAME, 1);
 
       request.onupgradeneeded = event => {
@@ -94,6 +94,23 @@ export default class IndexedDBService {
       const transaction = this.db.transaction(storeName, "readwrite");
       const objectStore = transaction.objectStore(storeName);
       const request = objectStore.delete(key);
+
+      request.onsuccess = () => resolve();
+      request.onerror = event => reject((event.target as IDBRequest).error);
+    });
+  }
+
+  public async clearDataInStore(storeName: string): Promise<void> {
+    await this.waitForInitialization();
+
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        return reject("Database not initialized.");
+      }
+
+      const transaction = this.db.transaction(storeName, "readwrite");
+      const objectStore = transaction.objectStore(storeName);
+      const request = objectStore.clear();
 
       request.onsuccess = () => resolve();
       request.onerror = event => reject((event.target as IDBRequest).error);
