@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { nanoid } from "nanoid";
 
 // constants
-import { Chart, ChartConfig, TraceConfig } from "@/modules/playground/types";
+import { FinalChartConfig, BaseChartConfig } from "@/modules/playground/types";
 import { CHART_TRACE_CONSTRAINTS_MAP } from "@/modules/playground/constants/charts";
 import { DEFAULT_COLOR_MAP } from "@/modules/playground/constants/colors";
 import { STEPS } from "../constants";
@@ -10,6 +10,9 @@ import { STEPS } from "../constants";
 // hooks
 import { useStore } from "@/modules/playground/contexts/store.context";
 import { useDependencyInjector } from "@/modules/playground/contexts/dependency-injector.context";
+
+// utils
+import { getDefaultChartSettings, getDefaultTraceSettings } from "@/modules/playground/utils/chart-settings";
 
 type Props = {
   onClose: () => void;
@@ -21,31 +24,17 @@ export default function useCreateChartFlow(props: Props) {
   const { dataManager } = useDependencyInjector();
 
   const chartToBeEditedId = useStore(store => store.chartToBeEditedId);
+  const setEditChartId = useStore(store => store.setChartToBeEditedId);
   const chartToBeEdited = useStore(store => store.charts?.find(chart => chart.i === chartToBeEditedId));
 
   const [chartConfig, setChartConfig] = useState<{
-    type: Chart["type"] | undefined;
-    tracesConfig: Chart["tracesConfig"];
-    chartSettings: Chart["chartSettings"];
+    type: FinalChartConfig["type"] | undefined;
+    tracesConfig: FinalChartConfig["tracesConfig"];
+    chartSettings: FinalChartConfig["chartSettings"];
   }>({
     type: chartToBeEdited?.type ?? undefined,
     tracesConfig: chartToBeEdited?.tracesConfig ?? [],
-    chartSettings: chartToBeEdited?.chartSettings ?? {
-      title: "",
-      titleVisibility: true,
-      legendVisibility: true,
-      legendPosition: "top",
-      xAxisLabel: "",
-      xAxisLimits: {
-        min: "",
-        max: "",
-      },
-      yAxisLabel: "",
-      yAxisLimits: {
-        min: "",
-        max: "",
-      },
-    },
+    chartSettings: chartToBeEdited?.chartSettings ?? getDefaultChartSettings(chartToBeEdited?.type ?? ""),
   });
 
   const [currentStep, setCurrentStep] = useState<(typeof STEPS)[keyof typeof STEPS]["value"]>(
@@ -69,6 +58,20 @@ export default function useCreateChartFlow(props: Props) {
         return false;
     }
   });
+  const disablePreviousStep = currentStep <= STEPS.CHART_TYPE_SELECT.value;
+  const disableNextStep = useMemo(() => {
+    switch (currentStep) {
+      case STEPS.CHART_TYPE_SELECT.value:
+        return !chartConfig.type;
+      case STEPS.DATA_SELECT.value:
+        return !completeTraces.length;
+      case STEPS.CUSTOMIZATION.value:
+        return false;
+      default:
+        return false;
+    }
+  }, [chartConfig.type, completeTraces.length, currentStep]);
+  const isLastStep = currentStep >= STEPS.CUSTOMIZATION.value;
 
   const checkIfStepIsDisabled = useCallback(
     (step: number) => {
@@ -86,30 +89,16 @@ export default function useCreateChartFlow(props: Props) {
     [chartConfig.type, completeTraces.length]
   );
 
-  const disablePreviousStep = currentStep <= STEPS.CHART_TYPE_SELECT.value;
-  const disableNextStep = useMemo(() => {
-    switch (currentStep) {
-      case STEPS.CHART_TYPE_SELECT.value:
-        return !chartConfig.type;
-      case STEPS.DATA_SELECT.value:
-        return !completeTraces.length;
-      case STEPS.CUSTOMIZATION.value:
-        return false;
-      default:
-        return false;
-    }
-  }, [chartConfig.type, completeTraces.length, currentStep]);
-  const isLastStep = currentStep >= STEPS.CUSTOMIZATION.value;
-
-  const handleChartTypeSelect = useCallback((selectedChartType: Chart["type"]) => {
+  const handleChartTypeSelect = useCallback((selectedChartType: FinalChartConfig["type"]) => {
     setChartConfig(prev => ({
       ...prev,
       type: selectedChartType,
+      chartSettings: getDefaultChartSettings(selectedChartType),
     }));
     setCurrentStep(prev => prev + 1);
   }, []);
 
-  const handleChartSettingsChange = useCallback((newChartSettings: Chart["chartSettings"]) => {
+  const handleChartSettingsChange = useCallback((newChartSettings: FinalChartConfig["chartSettings"]) => {
     setChartConfig(prev => ({
       ...prev,
       chartSettings: { ...prev.chartSettings, ...newChartSettings },
@@ -117,7 +106,7 @@ export default function useCreateChartFlow(props: Props) {
   }, []);
 
   const addOrUpdateTrace = useCallback(
-    (traceConfig: { x?: TraceConfig["x"]; y?: TraceConfig["y"] }, traceIndex: number) => {
+    (traceConfig: { x?: FinalChartConfig["tracesConfig"][number]["x"]; y?: FinalChartConfig["tracesConfig"][number]["y"] }, traceIndex: number) => {
       if (!chartType) return;
 
       setChartConfig(prev => {
@@ -131,8 +120,9 @@ export default function useCreateChartFlow(props: Props) {
                 {
                   ...traceConfig,
                   settings: {
-                    color: DEFAULT_COLOR_MAP[traceIndex],
+                    ...getDefaultTraceSettings(chartType),
                     name: "Trace " + prev.tracesConfig.length,
+                    color: DEFAULT_COLOR_MAP[traceIndex],
                   },
                   id: nanoid(),
                 },
@@ -142,18 +132,16 @@ export default function useCreateChartFlow(props: Props) {
           case traceIndex > -1 && traceIndex < prev.tracesConfig.length:
             return {
               ...prev,
-              tracesConfig: prev.tracesConfig.reduce((acc: Array<TraceConfig>, traceConfigObject, index) => {
+              tracesConfig: prev.tracesConfig.map((traceConfigObject, index) => {
                 if (traceIndex !== index) {
-                  acc.push(traceConfigObject);
-                  return acc;
+                  return traceConfigObject;
                 }
 
-                acc.push({
+                return {
                   ...traceConfigObject,
                   ...traceConfig,
-                });
-                return acc;
-              }, []),
+                };
+              }),
             };
           default:
             return prev;
@@ -164,7 +152,6 @@ export default function useCreateChartFlow(props: Props) {
   );
 
   const deleteTrace = useCallback((traceIndex: number) => {
-    console.log("traceIndex", traceIndex);
     setChartConfig(prev => {
       if (traceIndex < 0 || traceIndex >= prev.tracesConfig.length) {
         return prev;
@@ -180,7 +167,7 @@ export default function useCreateChartFlow(props: Props) {
   }, []);
 
   const editTraceSettingsItem = useCallback(
-    (newValue: string, traceIndex: number, item: keyof TraceConfig["settings"]) => {
+    (item: keyof FinalChartConfig["tracesConfig"][number]["settings"], newValue: string, traceIndex: number,) => {
       setChartConfig(prev => {
         if (traceIndex < 0 || traceIndex >= prev.tracesConfig.length) {
           return prev;
@@ -188,26 +175,25 @@ export default function useCreateChartFlow(props: Props) {
 
         return {
           ...prev,
-          tracesConfig: prev.tracesConfig.reduce((acc: Array<TraceConfig>, traceConfigObject, index) => {
+          tracesConfig: prev.tracesConfig.map((traceConfigObject, index) => {
             if (traceIndex !== index) {
-              acc.push(traceConfigObject);
-              return acc;
+              return traceConfigObject;
             }
 
-            acc.push({
+            return {
               ...traceConfigObject,
               settings: {
                 ...traceConfigObject.settings,
                 [item]: newValue,
               },
-            });
-            return acc;
-          }, []),
+            };
+          }),
         };
       });
     },
     []
   );
+
 
   const handleStepChange = useCallback((newStep: number) => {
     setCurrentStep(newStep);
@@ -228,13 +214,13 @@ export default function useCreateChartFlow(props: Props) {
     if (chartToBeEdited) {
       dataManager.updateChart(chartToBeEditedId, {
         ...chartToBeEdited,
-        ...(chartConfig as ChartConfig),
+        ...(chartConfig as BaseChartConfig),
       });
       onClose();
       return;
     }
 
-    dataManager.addChart(chartConfig as ChartConfig);
+    dataManager.addChart(chartConfig as BaseChartConfig);
     onClose();
   }, [chartConfig, chartToBeEdited, chartToBeEditedId, dataManager, onClose]);
 
@@ -258,5 +244,6 @@ export default function useCreateChartFlow(props: Props) {
     handleLoadPreviousStep,
     handleLoadNextStep,
     checkIfStepIsDisabled,
+    setEditChartId
   };
 }

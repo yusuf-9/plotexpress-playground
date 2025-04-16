@@ -4,11 +4,11 @@ import { EChartsOption } from "echarts";
 import BaseChartModel from "../chart";
 
 // types
-import { Chart } from "../../types";
+import { LineChartConfig } from "../../types";
 
 interface LineChartModelType {
-  getChartConfig: (tracesConfig: Chart["tracesConfig"], chartSettings: Chart["chartSettings"]) => EChartsOption;
-  getSeriesData: (tracesConfig: Chart["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
+  getChartConfig: (tracesConfig: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]) => EChartsOption;
+  getSeriesData: (tracesConfig: LineChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
 class LineChartModel extends BaseChartModel implements LineChartModelType {
@@ -22,7 +22,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns An array having array members, each having arrays of tuples, each representing an x and y data point for the series.
    */
-  getSeriesData(traces: Chart["tracesConfig"]): Array<Array<[xPoint: any, yPoint: any]>> {
+  getSeriesData(traces: LineChartConfig["tracesConfig"]): Array<Array<[xPoint: any, yPoint: any]>> {
     const uploadedFiles = this.storeRef.getState().files;
 
     const seriesData = traces.map(traceConfig => {
@@ -52,11 +52,10 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the line chart.
    */
-  getChartConfig(traces: Chart["tracesConfig"], chartSettings: Chart["chartSettings"]): EChartsOption {
+  getChartConfig(traces: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
-      name: traces[index]?.settings.name,
-      color: traces[index]?.settings.color,
+      ...traces[index]?.settings,
       data: dataSet,
       id: traces[index]?.id,
     }));
@@ -100,11 +99,16 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
         name: series.name,
         type: "line",
         data: series.data,
+        symbol: series.markerType,
+        symbolSize: series.markerWidth,
+        showSymbol: series.markerVisibility,
         itemStyle: {
           color: series.color,
         },
         lineStyle: {
           color: series.color,
+          width: series.traceWidth,
+          opacity: series.visibility ? Number(series.opacity) / 10 : 0,
         },
         id: series.id,
       })),

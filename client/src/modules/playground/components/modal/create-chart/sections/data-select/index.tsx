@@ -3,21 +3,21 @@ import DataSummary from "./components/data-summary";
 import DataGrid from "./components/data-grid";
 import useDataSelection from "./hooks/useDataSelection";
 import useDataSelectUi from "./hooks/useDataSelectUi";
-import { Chart, TraceConfig } from "@/modules/playground/types";
+import { Chart, BaseTraceConfig } from "@/modules/playground/types";
 
 type Props = {
   chartType: Chart["type"];
-  completeTraces: TraceConfig[];
-  allTraces: TraceConfig[];
+  completeTraces: BaseTraceConfig[];
+  allTraces: BaseTraceConfig[];
   addOrUpdateTrace: (
     traceConfig: {
-      x?: TraceConfig["x"];
-      y?: TraceConfig["y"];
+      x?: BaseTraceConfig["x"];
+      y?: BaseTraceConfig["y"];
     },
     traceIndex: number
   ) => void;
   deleteTrace: (traceIndex: number) => void;
-  editTraceSettingsItem: (newValue: string, traceIndex: number, item: keyof TraceConfig["settings"]) => void;
+  editTraceSettingsItem: (item: keyof BaseTraceConfig["settings"], newValue: string, traceIndex: number,) => void;
 };
 
 const DataSelectSection = (props: Props) => {
@@ -41,7 +41,7 @@ const DataSelectSection = (props: Props) => {
   });
 
   const { isFileColumnCollapsed, setIsFileColumnCollapsed } = useDataSelectUi();
-  
+
   return (
     <>
       <DataSummary

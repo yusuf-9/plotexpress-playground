@@ -47,7 +47,7 @@ export default function DataUploadModal(props: Props) {
   } = useFile({ setParsedData });
 
   const handleNextButtonClick = () => {
-    if(!isProcessed && selectedTestFile) {
+    if (!isProcessed && selectedTestFile) {
       handleLoadTestFile();
       return
     }
@@ -59,7 +59,7 @@ export default function DataUploadModal(props: Props) {
   const { error, isProcessed, isProcessing, processingProgress, fileName, processType } = fileProcessingState;
   const shouldRenderDataUploadSection = !isProcessed && !shouldLoadExistingFile;
   const shouldRenderDataEditorSection = Boolean((isProcessed && parsedData) || shouldLoadExistingFile);
-  const disableNextButton = !selectedTestFile && !isProcessed && !shouldLoadExistingFile;
+  const disableNextButton = (!selectedTestFile && !isProcessed && !shouldLoadExistingFile) || isProcessing;
 
   return (
     <Dialog

@@ -5,7 +5,7 @@ import EChartsReact from "echarts-for-react";
 import { EChartsOption } from "echarts";
 
 // types
-import { Chart } from "@/modules/playground/types";
+import { AreaChartConfig, BarChartConfig, Chart, LineChartConfig, ScatterChartConfig } from "@/modules/playground/types";
 
 // models
 import LineChartModel from "@/modules/playground/models/line-chart";
@@ -57,8 +57,34 @@ export default function useChartConfig(props: Props) {
   const { eventManager } = useDependencyInjector();
 
   const chartConfig: EChartsOption = useMemo(() => {
-    return chartModel.getChartConfig(tracesConfig, chartSettings);
-  }, [chartModel, tracesConfig, chartSettings]);
+    switch (type) {
+      case CHART_TYPES.LINE:
+        return (chartModel as LineChartModel).getChartConfig(
+          tracesConfig as LineChartConfig['tracesConfig'],
+          chartSettings
+        );
+      case CHART_TYPES.BAR:
+        return (chartModel as BarChartModel).getChartConfig(
+          tracesConfig as BarChartConfig['tracesConfig'],
+          chartSettings
+        );
+      case CHART_TYPES.SCATTER:
+        return (chartModel as ScatterChartModel).getChartConfig(
+          tracesConfig as ScatterChartConfig['tracesConfig'],
+          chartSettings
+        );
+      case CHART_TYPES.AREA:
+        return (chartModel as AreaChartModel).getChartConfig(
+          tracesConfig as AreaChartConfig['tracesConfig'],
+          chartSettings
+        );
+      default:
+        return (chartModel as LineChartModel).getChartConfig(
+          tracesConfig as LineChartConfig['tracesConfig'],
+          chartSettings
+        );
+    }
+  }, [type, chartModel, tracesConfig, chartSettings]);
   const previousChartConfig = useRef(chartConfig);
 
   // Handlers ----------------------------------------------------------
@@ -73,11 +99,39 @@ export default function useChartConfig(props: Props) {
   const handleDataUpdate = useCallback(() => {
     if (!chartAPI) return;
 
-    const newChartConfig = chartModel.getChartConfig(tracesConfig, chartSettings);
+    const newChartConfig = (() => {
+      switch (type) {
+        case CHART_TYPES.LINE:
+          return (chartModel as LineChartModel).getChartConfig(
+            tracesConfig as LineChartConfig['tracesConfig'],
+            chartSettings
+          );
+        case CHART_TYPES.BAR:
+          return (chartModel as BarChartModel).getChartConfig(
+            tracesConfig as BarChartConfig['tracesConfig'],
+            chartSettings
+          );
+        case CHART_TYPES.SCATTER:
+          return (chartModel as ScatterChartModel).getChartConfig(
+            tracesConfig as ScatterChartConfig['tracesConfig'],
+            chartSettings
+          );
+        case CHART_TYPES.AREA:
+          return (chartModel as AreaChartModel).getChartConfig(
+            tracesConfig as AreaChartConfig['tracesConfig'],
+            chartSettings
+          );
+        default:
+          return (chartModel as LineChartModel).getChartConfig(
+            tracesConfig as LineChartConfig['tracesConfig'],
+            chartSettings
+          );
+      }
+    })();
 
     const chartInstance = chartAPI.getEchartsInstance();
     chartInstance.setOption(newChartConfig, { notMerge: true });
-  }, [chartAPI, chartModel, tracesConfig, chartSettings]);
+  }, [chartAPI, chartModel, tracesConfig, chartSettings, type]);
 
   // Effects ----------------------------------------------------------
 

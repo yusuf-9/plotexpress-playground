@@ -1,17 +1,5 @@
-import { ChartTypes } from "../types";
-
-export const CHART_TYPES = Object.freeze({
-  LINE: "line",
-  SCATTER: "scatter",
-  BAR: "bar",
-  AREA: "area",
-  // HISTOGRAM: "histogram",
-  // PIE: "pie",
-  // RADAR: "radar",
-  // FLOW: "flow",
-  // TREND: "trend",
-
-});
+import { ChartTypes } from "@/modules/playground/types";
+import { CHART_TYPES } from "../types";
 
 export const CHART_TRACE_CONSTRAINTS_MAP: {
   [key in ChartTypes]: {
@@ -19,7 +7,6 @@ export const CHART_TRACE_CONSTRAINTS_MAP: {
     yRequired: boolean;
   };
 } = {
-  // Known charts
   [CHART_TYPES.LINE]: {
     xRequired: true,
     yRequired: true,

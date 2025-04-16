@@ -13,7 +13,7 @@ import { CHART_TRACE_CONSTRAINTS_MAP } from "@/modules/playground/constants/char
 import { useStore } from "@/modules/playground/contexts/store.context";
 
 // custom types
-import { AxisTypes, Chart, TraceConfig } from "@/modules/playground/types";
+import { AxisTypes, Chart, BaseTraceConfig } from "@/modules/playground/types";
 import { AgGridReactProps } from "ag-grid-react";
 
 // utils
@@ -21,12 +21,12 @@ import { getColorBgClass } from "@/modules/playground/utils/colors";
 
 type Props = {
   chartType: Chart["type"];
-  allTraces: TraceConfig[];
-  completeTraces: TraceConfig[];
+  allTraces: BaseTraceConfig[];
+  completeTraces: BaseTraceConfig[];
   addOrUpdateTrace: (
-    traceConfig: {
-      x?: TraceConfig["x"];
-      y?: TraceConfig["y"];
+    BaseTraceConfig: {
+      x?: BaseTraceConfig["x"];
+      y?: BaseTraceConfig["y"];
     },
     traceIndex: number
   ) => void;

@@ -4,14 +4,11 @@ import { EChartsOption } from "echarts";
 import BaseChartModel from "../chart";
 
 // types
-import { Chart } from "../../types";
+import { AreaChartConfig } from "../../types";
 
 interface AreaChartModelType {
-  getChartConfig: (
-    tracesConfig: Chart["tracesConfig"],
-    chartSettings: Chart["chartSettings"]
-  ) => EChartsOption;
-  getSeriesData: (tracesConfig: Chart["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
+  getChartConfig: (tracesConfig: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"]) => EChartsOption;
+  getSeriesData: (tracesConfig: AreaChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
 class AreaChartModel extends BaseChartModel implements AreaChartModelType {
@@ -25,7 +22,7 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns An array having array members, each having arrays of tuples, each representing an x and y data point for the series.
    */
-  getSeriesData(traces: Chart["tracesConfig"]): Array<Array<[xPoint: any, yPoint: any]>> {
+  getSeriesData(traces: AreaChartConfig["tracesConfig"]): Array<Array<[xPoint: any, yPoint: any]>> {
     const uploadedFiles = this.storeRef.getState().files;
 
     const seriesData = traces.map(traceConfig => {
@@ -55,15 +52,12 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the area chart.
    */
-  getChartConfig(
-    traces: Chart["tracesConfig"],
-    chartSettings: Chart["chartSettings"]
-  ): EChartsOption {
+  getChartConfig(traces: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"]): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
-      name: traces[index]?.settings.name,
-      color: traces[index]?.settings.color,
+      ...traces[index]?.settings,
       data: dataSet,
+      id: traces[index]?.id,
     }));
 
     return {
@@ -95,16 +89,22 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
         name: series.name,
         type: "line", // Keep type as "line" for area charts
         data: series.data,
+        symbol: series.markerType,
+        symbolSize: series.markerWidth,
+        showSymbol: series.markerVisibility,
         itemStyle: {
           color: series.color,
         },
         lineStyle: {
           color: series.color,
+          width: series.traceWidth,
+          opacity: series.visibility ? Number(series.opacity) / 10 : 0,
         },
         areaStyle: {
           color: series.color, // Set area style color to match line
-          opacity: 0.1, // Adjust opacity for better visibility
+          opacity: series.visibility ? Number(series.fillOpacity) / 10 : 0 // Adjust opacity for better visibility
         },
+        id: series.id,
       })),
     };
   }

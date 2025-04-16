@@ -1,26 +1,37 @@
 import { cn } from "@/common/utils";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 // sections
 import GeneralSettings from "./sections/general-settings";
 import AxisSettings from "./sections/axis-settings";
+import SeriesSettings from "./sections/series-settings";
 
 // constants
 import { SETTING_CATEGORIES } from "./constants";
 
 // types
-import { Chart } from "@/modules/playground/types";
+import { FinalChartConfig, Chart } from "@/modules/playground/types";
 
 // hooks
 import useDebouncedCallback from "@/common/hooks/use-debounced-callback";
 
+// utils
+import { getChartSettingsInputConfig } from "@/modules/playground/utils/chart-settings";
+
 type Props = {
   chartSettings: Chart["chartSettings"];
+  traces: Chart["tracesConfig"];
   setChartSettings: (settings: Chart["chartSettings"]) => void;
+  onTraceSettingChange: (
+    item: keyof FinalChartConfig["tracesConfig"][number]["settings"],
+    newValue: string,
+    traceIndex: number
+  ) => void;
+  chartType: Chart["type"];
 };
 
 const ChartCustomizationSection = (props: Props) => {
-  const { chartSettings, setChartSettings } = props;
+  const { chartSettings, setChartSettings, traces, onTraceSettingChange, chartType } = props;
 
   const [selectedSettingsCategory, setSelectedSettingsCategory] = useState<
     (typeof SETTING_CATEGORIES)[keyof typeof SETTING_CATEGORIES]
@@ -37,6 +48,9 @@ const ChartCustomizationSection = (props: Props) => {
   );
 
   const debouncedSetChartSettings = useDebouncedCallback(setChartSettingItem, 1000);
+  const debouncedSetTraceSettingItem = useDebouncedCallback(onTraceSettingChange, 1000);
+
+  const chartSettingsInputConfigs = useMemo(() => getChartSettingsInputConfig(chartType), [chartType]);
 
   return (
     <>
@@ -65,12 +79,21 @@ const ChartCustomizationSection = (props: Props) => {
             <GeneralSettings
               chartSettings={chartSettings}
               onSettingChange={debouncedSetChartSettings}
+              settingInputsConfig={chartSettingsInputConfigs.GENERAL}
             />
           )}
           {selectedSettingsCategory.value === SETTING_CATEGORIES.AXIS.value && (
             <AxisSettings
               chartSettings={chartSettings}
               onSettingChange={debouncedSetChartSettings}
+              settingInputsConfig={chartSettingsInputConfigs.AXIS}
+            />
+          )}
+          {selectedSettingsCategory.value === SETTING_CATEGORIES.SERIES.value && (
+            <SeriesSettings
+              onTraceSettingChange={debouncedSetTraceSettingItem}
+              traces={traces}
+              settingInputsConfig={chartSettingsInputConfigs.TRACE}
             />
           )}
         </div>
