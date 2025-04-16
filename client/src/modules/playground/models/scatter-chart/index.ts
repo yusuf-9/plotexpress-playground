@@ -4,14 +4,11 @@ import { EChartsOption } from "echarts";
 import BaseChartModel from "../chart";
 
 // types
-import { Chart } from "../../types";
+import { ScatterChartConfig } from "../../types";
 
 interface ScatterChartModelType {
-  getChartConfig: (
-    tracesConfig: Chart["tracesConfig"],
-    chartSettings: Chart["chartSettings"]
-  ) => EChartsOption;
-  getSeriesData: (tracesConfig: Chart["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
+  getChartConfig: (tracesConfig: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]) => EChartsOption;
+  getSeriesData: (tracesConfig: ScatterChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
 class ScatterChartModel extends BaseChartModel implements ScatterChartModelType {
@@ -25,7 +22,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
    * @param traces - The configuration of the chart traces.
    * @returns An array having array members, each having arrays of tuples, each representing an x and y data point for the series.
    */
-  getSeriesData(traces: Chart["tracesConfig"]): Array<Array<[xPoint: any, yPoint: any]>> {
+  getSeriesData(traces: ScatterChartConfig["tracesConfig"]): Array<Array<[xPoint: any, yPoint: any]>> {
     const uploadedFiles = this.storeRef.getState().files;
 
     const seriesData = traces.map(traceConfig => {
@@ -53,17 +50,15 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
    * Generates the full chart configuration for ECharts.
    *
    * @param traces - The configuration of the chart traces.
-   * @returns The ECharts option object configured for the line chart.
+   * @returns The ECharts option object configured for the scatter chart.
    */
-  getChartConfig(
-    traces: Chart["tracesConfig"],
-    chartSettings: Chart["chartSettings"]
-  ): EChartsOption {
+  getChartConfig(traces: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       name: traces[index]?.settings.name,
       color: traces[index]?.settings.color,
       data: dataSet,
+      id: traces[index]?.id,
     }));
 
     return {
@@ -116,6 +111,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
           color: series.color,
         },
         symbolSize: 10, // size of each point, can be a number or a function
+        id: series.id,
       })),
     };
   }

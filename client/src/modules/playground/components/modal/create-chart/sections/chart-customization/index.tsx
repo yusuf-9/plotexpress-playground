@@ -48,6 +48,7 @@ const ChartCustomizationSection = (props: Props) => {
   );
 
   const debouncedSetChartSettings = useDebouncedCallback(setChartSettingItem, 1000);
+  const debouncedSetTraceSettingItem = useDebouncedCallback(onTraceSettingChange, 1000);
 
   const chartSettingsInputConfigs = useMemo(() => getChartSettingsInputConfig(chartType), [chartType]);
 
@@ -90,7 +91,7 @@ const ChartCustomizationSection = (props: Props) => {
           )}
           {selectedSettingsCategory.value === SETTING_CATEGORIES.SERIES.value && (
             <SeriesSettings
-              onTraceSettingChange={onTraceSettingChange}
+              onTraceSettingChange={debouncedSetTraceSettingItem}
               traces={traces}
               settingInputsConfig={chartSettingsInputConfigs.TRACE}
             />

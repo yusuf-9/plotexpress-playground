@@ -23,7 +23,7 @@ interface Props {
 const SeriesSettings: React.FC<Props> = props => {
   const { traces, onTraceSettingChange, settingInputsConfig } = props;
 
-  const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
+  const [selectedTraceId, setSelectedTraceId] = useState<string | null>(traces[0]?.id);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTraces = useMemo(() => {
@@ -62,7 +62,7 @@ const SeriesSettings: React.FC<Props> = props => {
               onClick={() => setSelectedTraceId(trace.id)}
             >
               <div
-                className="w-4 h-4 rounded-full shadow-sm"
+                className="w-4 h-4 rounded-sm shadow-sm border border-white"
                 style={{ backgroundColor: trace.settings.color }}
               />
               <span className="text-sm">{trace.settings.name}</span>

@@ -1,13 +1,13 @@
 import { BaseChartConfig } from "./base-chart";
 
-export type TimeChartSettings = {
+export type LineChartSettings = {
 };
 
-export type TimeTraceSettings = {
+export type LineTraceSettings = {
   traceWidth: number;
   markerVisibility: boolean;
   markerWidth: number;
   markerType: string;
 };
 
-export type TimeChartConfig = BaseChartConfig<TimeChartSettings, TimeTraceSettings>;
+export type LineChartConfig = BaseChartConfig<LineChartSettings, LineTraceSettings>;

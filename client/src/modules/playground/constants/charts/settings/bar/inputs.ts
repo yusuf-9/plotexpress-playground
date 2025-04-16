@@ -8,7 +8,7 @@ export const DEFAULT_BAR_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
     placeholder: "Bin Width",
     inputProps: {
       min: 0,
-      max: 5,
+      max: 10,
       step: 1
     },
   },

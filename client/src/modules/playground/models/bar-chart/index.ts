@@ -4,16 +4,11 @@ import { EChartsOption } from "echarts";
 import BaseChartModel from "../chart";
 
 // types
-import { Chart } from "../../types";
+import { BarChartConfig } from "../../types";
 
 interface BarChartModelType {
-  getChartConfig: (
-    tracesConfig: Chart["tracesConfig"],
-    chartSettings: Chart["chartSettings"]
-  ) => EChartsOption;
-  getSeriesData: (
-    tracesConfig: Chart["tracesConfig"]
-  ) => [xAxisData: Array<string | number>, yAxisData: Array<(string | number)[]>];
+  getChartConfig: (tracesConfig: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"]) => EChartsOption;
+  getSeriesData: (tracesConfig: BarChartConfig["tracesConfig"]) => [xAxisData: Array<string | number>, yAxisData: Array<(string | number)[]>];
 }
 
 class BarChartModel extends BaseChartModel implements BarChartModelType {
@@ -27,9 +22,7 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns An array having array members, each having arrays of tuples, each representing an x and y data point for the series.
    */
-  getSeriesData(
-    traces: Chart["tracesConfig"]
-  ): [xAxisData: Array<string | number>, yAxisData: Array<(string | number)[]>] {
+  getSeriesData(traces: BarChartConfig["tracesConfig"]): [xAxisData: Array<string | number>, yAxisData: Array<(string | number)[]>] {
     const uploadedFiles = this.storeRef.getState().files;
 
     // validate that the x axis columns are all the same
@@ -72,15 +65,13 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the bar chart.
    */
-  getChartConfig(
-    traces: Chart["tracesConfig"],
-    chartSettings: Chart["chartSettings"]
-  ): EChartsOption {
+  getChartConfig(traces: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"]): EChartsOption {
     const [xCategories, yDataSets] = this.getSeriesData(traces);
     const seriesConfig = yDataSets.map((dataSet, index) => ({
       name: traces[index]?.settings.name,
       color: traces[index]?.settings.color,
       data: dataSet,
+      id: traces[index]?.id,
     }));
 
     return {
@@ -119,6 +110,10 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
         itemStyle: {
           color: series.color,
         },
+        lineStyle: {
+          color: series.color,
+        },
+        id: series.id,
       })),
     };
   }
