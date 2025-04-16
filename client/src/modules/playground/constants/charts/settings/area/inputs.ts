@@ -4,7 +4,7 @@ export const DEFAULT_AREA_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
   {
     id: AREA_CHART_TRACE_SETTING_OPTION_KEYS.traceWidth,
     label: "Trace width",
-    inputType: "slider", 
+    inputType: "slider",
     placeholder: "trace width",
     inputProps: {
       min: 0,
@@ -20,34 +20,47 @@ export const DEFAULT_AREA_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
   },
   {
     id: AREA_CHART_TRACE_SETTING_OPTION_KEYS.markerWidth,
-    label: "Marker width", 
+    label: "Marker width",
     inputType: "slider",
     placeholder: "marker width",
     inputProps: {
       min: 0,
-      max: 5,
+      max: 10,
       step: 1
     }
   },
   {
-    id: AREA_CHART_TRACE_SETTING_OPTION_KEYS.marketType,
+    id: AREA_CHART_TRACE_SETTING_OPTION_KEYS.markerType,
     label: "Marker type",
     inputType: "select",
     placeholder: "marker type",
     options: [
       {
         label: "Circle",
-        value: "circle"
+        value: "circle",
       },
       {
-        label: "Square", 
-        value: "square"
+        label: "Square",
+        value: "square",
       },
       {
         label: "Triangle",
-        value: "triangle" 
-      }
-    ]
+        value: "triangle",
+      },
+
+      {
+        label: "Diamond",
+        value: "diamond",
+      },
+      {
+        label: "Pin",
+        value: "pin",
+      },
+      {
+        label: "Arrow",
+        value: "arrow",
+      },
+    ],
   },
   {
     id: AREA_CHART_TRACE_SETTING_OPTION_KEYS.fillOpacity,
@@ -55,9 +68,9 @@ export const DEFAULT_AREA_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
     inputType: "slider",
     placeholder: "fill opacity",
     inputProps: {
-      min: 0,
-      max: 1,
-      step: 0.1
+      min: 1,
+      max: 10,
+      step: 1
     }
   }
 ];

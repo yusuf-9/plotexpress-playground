@@ -25,7 +25,7 @@ export const DEFAULT_LINE_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
     placeholder: "marker width",
     inputProps: {
       min: 0,
-      max: 5,
+      max: 10,
       step: 1
     },
   },
@@ -46,6 +46,19 @@ export const DEFAULT_LINE_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
       {
         label: "Triangle",
         value: "triangle",
+      },
+
+      {
+        label: "Diamond",
+        value: "diamond",
+      },
+      {
+        label: "Pin",
+        value: "pin",
+      },
+      {
+        label: "Arrow",
+        value: "arrow",
       },
     ],
   },

@@ -38,5 +38,5 @@ export const DEFAULT_SERIES_SETTING_OPTION_KEYS = {
 export const DEFAULT_SERIES_SETTINGS: Omit<BaseTraceConfig["settings"], "name"> = {
   [DEFAULT_SERIES_SETTING_OPTION_KEYS.color]: "#000000",
   [DEFAULT_SERIES_SETTING_OPTION_KEYS.visibility]: true,
-  [DEFAULT_SERIES_SETTING_OPTION_KEYS.opacity]: "1",
+  [DEFAULT_SERIES_SETTING_OPTION_KEYS.opacity]: 10,
 };

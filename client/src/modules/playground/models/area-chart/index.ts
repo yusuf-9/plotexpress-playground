@@ -55,8 +55,7 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
   getChartConfig(traces: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"]): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
-      name: traces[index]?.settings.name,
-      color: traces[index]?.settings.color,
+      ...traces[index]?.settings,
       data: dataSet,
       id: traces[index]?.id,
     }));
@@ -90,15 +89,20 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
         name: series.name,
         type: "line", // Keep type as "line" for area charts
         data: series.data,
+        symbol: series.markerType,
+        symbolSize: series.markerWidth,
+        showSymbol: series.markerVisibility,
         itemStyle: {
           color: series.color,
         },
         lineStyle: {
           color: series.color,
+          width: series.traceWidth,
+          opacity: series.visibility ? Number(series.opacity) / 10 : 0,
         },
         areaStyle: {
           color: series.color, // Set area style color to match line
-          opacity: 0.1, // Adjust opacity for better visibility
+          opacity: series.visibility ? Number(series.fillOpacity) / 10 : 0 // Adjust opacity for better visibility
         },
         id: series.id,
       })),

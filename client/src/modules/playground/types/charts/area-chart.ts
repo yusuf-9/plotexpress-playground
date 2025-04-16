@@ -7,7 +7,7 @@ export type AreaTraceSettings = {
   traceWidth: number;
   markerVisibility: boolean;
   markerWidth: number;
-  marketType: string;
+  markerType: string;
   fillOpacity: number;
 };
 

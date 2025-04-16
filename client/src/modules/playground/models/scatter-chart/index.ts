@@ -55,8 +55,8 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
   getChartConfig(traces: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
+      ...traces[index]?.settings,
       name: traces[index]?.settings.name,
-      color: traces[index]?.settings.color,
       data: dataSet,
       id: traces[index]?.id,
     }));
@@ -107,10 +107,12 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
         name: series.name,
         type: "scatter",
         data: series.data,
+        symbol: series.markerType,
+        symbolSize: series.markerWidth,
         itemStyle: {
+          opacity: series.visibility ? Number(series.opacity) / 10 : 0,
           color: series.color,
         },
-        symbolSize: 10, // size of each point, can be a number or a function
         id: series.id,
       })),
     };

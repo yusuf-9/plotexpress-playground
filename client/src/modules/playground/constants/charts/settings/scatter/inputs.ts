@@ -2,6 +2,17 @@ import { SCATTER_CHART_TRACE_SETTING_OPTION_KEYS } from "./settings";
 
 export const DEFAULT_SCATTER_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
   {
+    id: SCATTER_CHART_TRACE_SETTING_OPTION_KEYS.markerWidth,
+    label: "Marker Width",
+    inputType: "slider",
+    placeholder: "marker width",
+    inputProps: {
+      min: 0,
+      max: 10,
+      step: 1
+    },
+  },
+  {
     id: SCATTER_CHART_TRACE_SETTING_OPTION_KEYS.markerType,
     label: "Marker Type",
     inputType: "select",
@@ -19,18 +30,20 @@ export const DEFAULT_SCATTER_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
         label: "Triangle",
         value: "triangle",
       },
+
+      {
+        label: "Diamond",
+        value: "diamond",
+      },
+      {
+        label: "Pin",
+        value: "pin",
+      },
+      {
+        label: "Arrow",
+        value: "arrow",
+      },
     ],
-  },
-  {
-    id: SCATTER_CHART_TRACE_SETTING_OPTION_KEYS.markerWidth,
-    label: "Marker Width",
-    inputType: "slider",
-    placeholder: "marker width",
-    inputProps: {
-      min: 0,
-      max: 5,
-      step: 1
-    },
   },
 ];
 

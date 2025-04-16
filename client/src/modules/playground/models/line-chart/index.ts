@@ -55,8 +55,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
   getChartConfig(traces: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
-      name: traces[index]?.settings.name,
-      color: traces[index]?.settings.color,
+      ...traces[index]?.settings,
       data: dataSet,
       id: traces[index]?.id,
     }));
@@ -100,11 +99,16 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
         name: series.name,
         type: "line",
         data: series.data,
+        symbol: series.markerType,
+        symbolSize: series.markerWidth,
+        showSymbol: series.markerVisibility,
         itemStyle: {
           color: series.color,
         },
         lineStyle: {
           color: series.color,
+          width: series.traceWidth,
+          opacity: series.visibility ? Number(series.opacity) / 10 : 0,
         },
         id: series.id,
       })),

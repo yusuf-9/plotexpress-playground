@@ -7,9 +7,9 @@ export const DEFAULT_BAR_CHART_TRACE_SETTINGS_INPUT_CONFIG = [
     inputType: "slider",
     placeholder: "Bin Width",
     inputProps: {
-      min: 0,
-      max: 10,
-      step: 1
+      min: 5,
+      max: 100,
+      step: 5
     },
   },
 ];

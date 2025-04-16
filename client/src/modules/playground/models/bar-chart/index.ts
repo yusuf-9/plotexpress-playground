@@ -68,10 +68,9 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
   getChartConfig(traces: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"]): EChartsOption {
     const [xCategories, yDataSets] = this.getSeriesData(traces);
     const seriesConfig = yDataSets.map((dataSet, index) => ({
-      name: traces[index]?.settings.name,
-      color: traces[index]?.settings.color,
       data: dataSet,
       id: traces[index]?.id,
+      ...traces[index]?.settings,
     }));
 
     return {
@@ -109,10 +108,12 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
         data: series.data,
         itemStyle: {
           color: series.color,
+          opacity: series.visibility ? Number(series.opacity) / 10 : 0,
         },
         lineStyle: {
           color: series.color,
         },
+        barWidth: series.binWidth + "%",
         id: series.id,
       })),
     };

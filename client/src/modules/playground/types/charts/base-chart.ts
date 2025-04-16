@@ -16,7 +16,7 @@ export type BaseTraceConfig<SpecificTraceSettings = object> = {
   settings: {
     color: string;
     name: string;
-    opacity: string;
+    opacity: number;
     visibility: boolean;
   } & SpecificTraceSettings;
   id: string;

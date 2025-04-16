@@ -176,10 +176,10 @@ export function renderInput(inputConfig: {
             id={inputConfig.id}
             defaultValue={[inputConfig.defaultValue]}
             onValueCommit={value => {
-              inputConfig.onChangeValue(value);
+              inputConfig.onChangeValue(value?.[0]);
             }}
-            min={Number( inputConfig.inputProps?.min ?? 0 )}
-            max={Number( inputConfig.inputProps?.max ?? 100 )}
+            min={Number(inputConfig.inputProps?.min ?? 0)}
+            max={Number(inputConfig.inputProps?.max ?? 100)}
           />
         </div>
       );

@@ -4,7 +4,7 @@ export const AREA_CHART_TRACE_SETTING_OPTION_KEYS = {
   traceWidth: "traceWidth",
   markerVisibility: "markerVisibility",
   markerWidth: "markerWidth",
-  marketType: "marketType",
+  markerType: "markerType",
   fillOpacity: "fillOpacity",
 } as const;
 
@@ -15,8 +15,8 @@ export const DEFAULT_AREA_CHART_TRACE_SETTINGS: AreaTraceSettings = {
   [AREA_CHART_TRACE_SETTING_OPTION_KEYS.traceWidth]: 1,
   [AREA_CHART_TRACE_SETTING_OPTION_KEYS.markerVisibility]: false,
   [AREA_CHART_TRACE_SETTING_OPTION_KEYS.markerWidth]: 1,
-  [AREA_CHART_TRACE_SETTING_OPTION_KEYS.marketType]: "circle",
-  [AREA_CHART_TRACE_SETTING_OPTION_KEYS.fillOpacity]: 0.5,
+  [AREA_CHART_TRACE_SETTING_OPTION_KEYS.markerType]: "circle",
+  [AREA_CHART_TRACE_SETTING_OPTION_KEYS.fillOpacity]: 1
 };
 
 export const DEFAULT_AREA_CHART_SETTINGS: AreaChartSettings = {
