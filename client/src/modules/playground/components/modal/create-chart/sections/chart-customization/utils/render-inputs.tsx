@@ -35,7 +35,7 @@ export function renderInput(inputConfig: {
             id={inputConfig.id}
             placeholder={inputConfig.placeholder}
             className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={inputConfig.defaultValue}
+            value={inputConfig.defaultValue}
             onChange={e => {
               inputConfig.onChangeValue(e.target.value);
             }}
@@ -60,7 +60,7 @@ export function renderInput(inputConfig: {
             id={inputConfig.id}
             placeholder={inputConfig.placeholder}
             className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={inputConfig.defaultValue}
+            value={inputConfig.defaultValue}
             onChange={e => {
               // Ensure value doesn't exceed max if specified
               const maxValue = inputConfig.inputProps?.max;
@@ -111,7 +111,7 @@ export function renderInput(inputConfig: {
             {inputConfig.label}
           </Label>
           <Select
-            defaultValue={inputConfig.defaultValue}
+            value={inputConfig.defaultValue}
             onValueChange={value => {
               inputConfig.onChangeValue(value);
             }}
@@ -152,7 +152,7 @@ export function renderInput(inputConfig: {
             id={inputConfig.id}
             placeholder={inputConfig.placeholder}
             className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={inputConfig.defaultValue}
+            value={inputConfig.defaultValue}
             onChange={e => {
               inputConfig.onChangeValue(e.target.value);
             }}
@@ -174,7 +174,7 @@ export function renderInput(inputConfig: {
           </Label>
           <Slider
             id={inputConfig.id}
-            defaultValue={[inputConfig.defaultValue]}
+            value={[inputConfig.defaultValue]}
             onValueCommit={value => {
               inputConfig.onChangeValue(value?.[0]);
             }}
@@ -218,7 +218,7 @@ export function renderAxisInput(inputConfig: {
             type="text"
             placeholder="Min"
             className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={inputConfig.defaultValueMin}
+            value={inputConfig.defaultValueMin}
             onChange={e => {
               inputConfig.onChangeMin(e.target.value);
             }}
@@ -235,7 +235,7 @@ export function renderAxisInput(inputConfig: {
             type="text"
             placeholder="Max"
             className="flex-1 border-b-2 border-secondary rounded-md p-2"
-            defaultValue={inputConfig.defaultValueMax}
+            value={inputConfig.defaultValueMax}
             onChange={e => {
               inputConfig.onChangeMax(e.target.value);
             }}
