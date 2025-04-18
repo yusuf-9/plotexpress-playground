@@ -175,7 +175,7 @@ export function renderInput(inputConfig: {
           <Slider
             id={inputConfig.id}
             value={[inputConfig.defaultValue]}
-            onValueCommit={value => {
+            onValueChange={(value: [number]) => {
               inputConfig.onChangeValue(value?.[0]);
             }}
             min={Number(inputConfig.inputProps?.min ?? 0)}

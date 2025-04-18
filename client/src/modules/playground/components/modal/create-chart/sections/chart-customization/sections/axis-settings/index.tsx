@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useState } from "react";
 import { cn } from "@/common/utils";
 
 // types
@@ -20,23 +20,43 @@ interface Props {
 const AxisSettings: React.FC<Props> = props => {
   const { chartSettings, onSettingChange, settingInputsConfig } = props;
 
+  const [localChartSettings, setLocalChartSettings] = useState<Chart["chartSettings"]>(chartSettings);
+
   const updateAxisLimit = useCallback(
     (axis: "x" | "y", limit: "min" | "max", value: string) => {
       if (axis === "x") {
-        onSettingChange("xAxisLimits", {
-          ...chartSettings.xAxisLimits,
+        const newXAxisLimits = {
+          ...localChartSettings.xAxisLimits,
           [limit]: value,
-        });
+        };
+        setLocalChartSettings(prev => ({
+          ...prev,
+          xAxisLimits: newXAxisLimits
+        }));
+        onSettingChange("xAxisLimits", newXAxisLimits);
         return;
       }
 
-      onSettingChange("yAxisLimits", {
-        ...chartSettings.yAxisLimits,
+      const newYAxisLimits = {
+        ...localChartSettings.yAxisLimits,
         [limit]: value,
-      });
+      };
+      setLocalChartSettings(prev => ({
+        ...prev,
+        yAxisLimits: newYAxisLimits
+      }));
+      onSettingChange("yAxisLimits", newYAxisLimits);
     },
-    [chartSettings.xAxisLimits, chartSettings.yAxisLimits, onSettingChange]
+    [localChartSettings, onSettingChange]
   );
+
+  const handleSettingChange = useCallback((item: keyof Chart["chartSettings"], value: any) => {
+    setLocalChartSettings(prev => ({
+      ...prev,
+      [item]: value
+    }));
+    onSettingChange(item, value);
+  }, [onSettingChange]);
 
   const axisSettingInputsJsx = useMemo(() => {
     return Object.entries(settingInputsConfig).map(([axis, axisInputs], index) => {
@@ -45,10 +65,10 @@ const AxisSettings: React.FC<Props> = props => {
           const inputConfigWithDefaultValues = {
             ...inputConfig,
             defaultValueMin:
-              (chartSettings[inputConfig.id as keyof Chart["chartSettings"]] as { min: string; max: string })?.min ||
+              (localChartSettings[inputConfig.id as keyof Chart["chartSettings"]] as { min: string; max: string })?.min ||
               undefined,
             defaultValueMax:
-              (chartSettings[inputConfig.id as keyof Chart["chartSettings"]] as { min: string; max: string })?.max ||
+              (localChartSettings[inputConfig.id as keyof Chart["chartSettings"]] as { min: string; max: string })?.max ||
               undefined,
             onChangeMin: (value: any) => {
               updateAxisLimit(axis as "x" | "y", "min", value);
@@ -64,9 +84,9 @@ const AxisSettings: React.FC<Props> = props => {
         // @ts-expect-error - TS is acting dumb here ngl
         return renderInput({
           ...inputConfig,
-          defaultValue: chartSettings[inputConfig.id as keyof Chart["chartSettings"]],
+          defaultValue: localChartSettings[inputConfig.id as keyof Chart["chartSettings"]],
           onChangeValue: (value: any) => {
-            onSettingChange(inputConfig.id as keyof Chart["chartSettings"], value);
+            handleSettingChange(inputConfig.id as keyof Chart["chartSettings"], value);
           },
         });
       });
@@ -83,7 +103,7 @@ const AxisSettings: React.FC<Props> = props => {
         </div>
       );
     });
-  }, [chartSettings, onSettingChange, updateAxisLimit, settingInputsConfig]);
+  }, [localChartSettings, handleSettingChange, updateAxisLimit, settingInputsConfig]);
 
   return <div className="flex-grow flex overflow-y-auto">{axisSettingInputsJsx}</div>;
 };
