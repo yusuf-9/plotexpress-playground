@@ -61,6 +61,12 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
     }));
 
     return {
+      grid: {
+        left: 50,
+        right: 50,
+        top: 50,
+        bottom: 50,
+      },
       title: {
         show: false,
       },
@@ -76,6 +82,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
       xAxis: {
         type: "category", // TODO: set this dynamically for timeseries, logging, etc kinds of data
         name: chartSettings?.xAxisLabel,
+        boundaryGap: false,
         // axisLine: {
         //   show: true,
         //   lineStyle: {
