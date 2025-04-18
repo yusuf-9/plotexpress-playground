@@ -25,17 +25,35 @@ const SeriesSettings: React.FC<Props> = props => {
 
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(traces[0]?.id);
   const [searchQuery, setSearchQuery] = useState("");
+  const [localTraceSettings, setLocalTraceSettings] = useState<Chart["tracesConfig"]>(traces);
 
   const filteredTraces = useMemo(() => {
-    return traces.filter(trace => trace.settings.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [traces, searchQuery]);
+    return localTraceSettings.filter(trace => trace.settings.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [localTraceSettings, searchQuery]);
 
   const [selectedTrace, selectedTraceIndex] = useMemo(() => {
-    const selectedTraceIndex = traces.findIndex(trace => trace.id === selectedTraceId);
-    const selectedTrace = traces[selectedTraceIndex];
+    const selectedTraceIndex = localTraceSettings.findIndex(trace => trace.id === selectedTraceId);
+    const selectedTrace = localTraceSettings[selectedTraceIndex];
 
     return [selectedTrace, selectedTraceIndex];
-  }, [traces, selectedTraceId]);
+  }, [localTraceSettings, selectedTraceId]);
+
+  const handleTraceSettingChange = (
+    item: keyof Chart["tracesConfig"][number]["settings"],
+    value: any,
+    traceIndex: number
+  ) => {
+    const updatedTraces = [...localTraceSettings];
+    updatedTraces[traceIndex] = {
+      ...updatedTraces[traceIndex],
+      settings: {
+        ...updatedTraces[traceIndex].settings,
+        [item]: value
+      }
+    };
+    setLocalTraceSettings(updatedTraces);
+    onTraceSettingChange(item, value, traceIndex);
+  };
 
   return (
     <div className="flex-grow flex overflow-y-auto">
@@ -84,7 +102,7 @@ const SeriesSettings: React.FC<Props> = props => {
               ...inputConfig,
               defaultValue: selectedTrace.settings[inputConfig.id as keyof Chart["tracesConfig"][number]["settings"]],
               onChangeValue: (value: any) =>
-                onTraceSettingChange(
+                handleTraceSettingChange(
                   inputConfig.id as keyof Chart["tracesConfig"][number]["settings"],
                   value,
                   selectedTraceIndex

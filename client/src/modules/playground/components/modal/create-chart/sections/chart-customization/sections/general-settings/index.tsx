@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 
 // types
 import { Chart } from "@/modules/playground/types";
@@ -19,17 +19,27 @@ interface Props {
 const GeneralSettings: React.FC<Props> = props => {
   const { chartSettings, onSettingChange, settingInputsConfig } = props;
 
+  const [localChartSettings, setLocalChartSettings] = useState<Chart["chartSettings"]>(chartSettings);
+
+  const handleSettingChange = (item: keyof Chart["chartSettings"], value: any) => {
+    setLocalChartSettings(prev => ({
+      ...prev,
+      [item]: value
+    }));
+    onSettingChange(item, value);
+  };
+
   const generalSettingInputsJsx = useMemo(() => {
     const inputsConfig = settingInputsConfig.map(input => ({
       ...input,
-      defaultValue: chartSettings[input.id as keyof Chart["chartSettings"]],
+      defaultValue: localChartSettings[input.id as keyof Chart["chartSettings"]],
       onChangeValue: (value: any) => {
-        onSettingChange(input.id as keyof Chart["chartSettings"], value);
+        handleSettingChange(input.id as keyof Chart["chartSettings"], value);
       },
     }));
 
     return inputsConfig.map(input => renderInput(input));
-  }, [chartSettings, onSettingChange, settingInputsConfig]);
+  }, [handleSettingChange, localChartSettings, settingInputsConfig]);
 
   return (
     <div className="flex-grow flex overflow-y-auto">
