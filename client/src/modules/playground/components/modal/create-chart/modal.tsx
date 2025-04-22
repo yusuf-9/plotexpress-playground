@@ -59,9 +59,6 @@ export default function CreateChartModal(props: Props) {
 
     return (
       <div className="flex-grow flex flex-col w-full h-full">
-        <h2 className="text-lg font-semibold text-foreground px-4">
-          {chartSettings?.titleVisibility ? chartSettings?.title : ""}
-        </h2>
         <Chart
           chart={{
             i: "preview",

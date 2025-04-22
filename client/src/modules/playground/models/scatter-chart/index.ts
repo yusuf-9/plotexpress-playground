@@ -69,7 +69,10 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
         bottom: 50,
       },
       title: {
-        show: false,
+        text: chartSettings.title,
+        show: chartSettings.titleVisibility,
+        top: 0,
+        left: "center",
       },
       tooltip: {
         trigger: "item",
@@ -94,8 +97,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
       legend: {
         show: chartSettings.legendVisibility,
         data: seriesConfig.map(series => series.name),
-        bottom: chartSettings.legendPosition === "bottom" ? 0 : undefined,
-        top: chartSettings.legendPosition === "top" ? 0 : undefined,
+        bottom: 0,
       },
       xAxis: {
         type: "value", // TODO: set this dynamically for timeseries, logging, etc kinds of data

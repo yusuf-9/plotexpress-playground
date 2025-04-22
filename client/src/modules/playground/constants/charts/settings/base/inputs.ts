@@ -20,22 +20,6 @@ export const DEFAULT_CHART_GENERAL_SETTINGS_INPUT_CONFIG = [
     inputType: "switch",
     placeholder: "Show legend",
   },
-  {
-    id: DEFAULT_CHART_SETTINGS_OPTION_KEYS.legendPosition,
-    label: "Legend position",
-    inputType: "select",
-    placeholder: "Select legend position",
-    options: [
-      {
-        label: "Top",
-        value: "top",
-      },
-      {
-        label: "Bottom",
-        value: "bottom",
-      },
-    ],
-  },
 ];
 
 export const DEFAULT_CHART_AXIS_SETTINGS_INPUT_CONFIG = {
