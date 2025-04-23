@@ -11,11 +11,12 @@ import {
 type Props = PropsWithChildren & {
   onDelete: () => void;
   onEdit: () => void;
-  onExportAsImage: () => void;
+  onExportAsPNG: () => void;
+  onExportAsSVG: () => void;
 };
 
 const GridItem = (props: Props) => {
-  const { children, onDelete, onEdit, onExportAsImage } = props;
+  const { children, onDelete, onEdit, onExportAsPNG, onExportAsSVG } = props;
   return (
     <div className="h-full w-full relative bg-background rounded-lg pt-3 p-4 pr-2 flex flex-col shadow-md hover:shadow-lg transition-shadow duration-300">
       <div className="absolute top-5 right-5 z-10 flex items-center">
@@ -48,10 +49,17 @@ const GridItem = (props: Props) => {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={onExportAsImage}
+              onClick={onExportAsPNG}
             >
               <Image className="mr-2 h-4 w-4" />
-              <span>Export as image</span>
+              <span>Export as PNG</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={onExportAsSVG}
+            >
+              <Image className="mr-2 h-4 w-4" />
+              <span>Export as SVG</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -22,6 +22,7 @@ import { EVENTS } from "@/modules/playground/constants/events";
 
 // contexts
 import { useDependencyInjector } from "@/modules/playground/contexts/dependency-injector.context";
+import { useTheme } from "@/common/providers/theme";
 
 type Props = {
   chart: Chart;
@@ -35,6 +36,7 @@ export default function useChartConfig(props: Props) {
   const { i: id, tracesConfig, type, chartSettings } = chart;
 
   const useStoreRef = useUnreactiveStore();
+  const { theme } = useTheme()
 
   const chartModelType = useMemo(() => {
     switch (type) {
@@ -61,30 +63,35 @@ export default function useChartConfig(props: Props) {
       case CHART_TYPES.LINE:
         return (chartModel as LineChartModel).getChartConfig(
           tracesConfig as LineChartConfig['tracesConfig'],
-          chartSettings
+          chartSettings,
+          theme
         );
       case CHART_TYPES.BAR:
         return (chartModel as BarChartModel).getChartConfig(
           tracesConfig as BarChartConfig['tracesConfig'],
-          chartSettings
+          chartSettings,
+          theme
         );
       case CHART_TYPES.SCATTER:
         return (chartModel as ScatterChartModel).getChartConfig(
           tracesConfig as ScatterChartConfig['tracesConfig'],
-          chartSettings
+          chartSettings,
+          theme
         );
       case CHART_TYPES.AREA:
         return (chartModel as AreaChartModel).getChartConfig(
           tracesConfig as AreaChartConfig['tracesConfig'],
-          chartSettings
+          chartSettings,
+          theme
         );
       default:
         return (chartModel as LineChartModel).getChartConfig(
           tracesConfig as LineChartConfig['tracesConfig'],
-          chartSettings
+          chartSettings,
+          theme
         );
     }
-  }, [type, chartModel, tracesConfig, chartSettings]);
+  }, [type, chartModel, tracesConfig, chartSettings, theme]);
   const previousChartConfig = useRef(chartConfig);
 
   // Handlers ----------------------------------------------------------
@@ -104,34 +111,39 @@ export default function useChartConfig(props: Props) {
         case CHART_TYPES.LINE:
           return (chartModel as LineChartModel).getChartConfig(
             tracesConfig as LineChartConfig['tracesConfig'],
-            chartSettings
+            chartSettings,
+            theme
           );
         case CHART_TYPES.BAR:
           return (chartModel as BarChartModel).getChartConfig(
             tracesConfig as BarChartConfig['tracesConfig'],
-            chartSettings
+            chartSettings,
+            theme
           );
         case CHART_TYPES.SCATTER:
           return (chartModel as ScatterChartModel).getChartConfig(
             tracesConfig as ScatterChartConfig['tracesConfig'],
-            chartSettings
+            chartSettings,
+            theme
           );
         case CHART_TYPES.AREA:
           return (chartModel as AreaChartModel).getChartConfig(
             tracesConfig as AreaChartConfig['tracesConfig'],
-            chartSettings
+            chartSettings,
+            theme
           );
         default:
           return (chartModel as LineChartModel).getChartConfig(
             tracesConfig as LineChartConfig['tracesConfig'],
-            chartSettings
+            chartSettings,
+            theme
           );
       }
     })();
 
     const chartInstance = chartAPI.getEchartsInstance();
     chartInstance.setOption(newChartConfig, { notMerge: true });
-  }, [chartAPI, chartModel, tracesConfig, chartSettings, type]);
+  }, [chartAPI, type, chartModel, tracesConfig, chartSettings, theme]);
 
   // Effects ----------------------------------------------------------
 
@@ -144,7 +156,7 @@ export default function useChartConfig(props: Props) {
 
     const chartInstance = chartAPI.getEchartsInstance();
     chartInstance.setOption(chartConfig, { notMerge: true });
-  }, [chartAPI, chartConfig]);
+  }, [chartAPI, chartConfig, theme]);
 
   /**
    * Effect to update the series when data of a file changes

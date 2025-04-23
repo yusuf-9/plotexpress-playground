@@ -7,7 +7,7 @@ import BaseChartModel from "../chart";
 import { LineChartConfig } from "../../types";
 
 interface LineChartModelType {
-  getChartConfig: (tracesConfig: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]) => EChartsOption;
+  getChartConfig: (tracesConfig: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"], theme: "light" | "dark") => EChartsOption;
   getSeriesData: (tracesConfig: LineChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
@@ -52,7 +52,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the line chart.
    */
-  getChartConfig(traces: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]): EChartsOption {
+  getChartConfig(traces: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"], theme: "light" | "dark"): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       ...traces[index]?.settings,
@@ -121,7 +121,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
         },
         id: series.id,
       })),
-      backgroundColor: localStorage.getItem("theme") === "dark" ? "#000" : "#fff",
+      backgroundColor: theme === "dark" ? "#000" : "#fff",
     };
   }
 }

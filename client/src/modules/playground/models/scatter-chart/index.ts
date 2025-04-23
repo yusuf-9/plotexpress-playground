@@ -7,7 +7,7 @@ import BaseChartModel from "../chart";
 import { ScatterChartConfig } from "../../types";
 
 interface ScatterChartModelType {
-  getChartConfig: (tracesConfig: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]) => EChartsOption;
+  getChartConfig: (tracesConfig: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"], theme: "light" | "dark") => EChartsOption;
   getSeriesData: (tracesConfig: ScatterChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
@@ -52,7 +52,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the scatter chart.
    */
-  getChartConfig(traces: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]): EChartsOption {
+  getChartConfig(traces: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"], theme: "light" | "dark"): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       ...traces[index]?.settings,
@@ -123,6 +123,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
         },
         id: series.id,
       })),
+      backgroundColor: theme === "dark" ? "#000" : "#FFF"
     };
   }
 }

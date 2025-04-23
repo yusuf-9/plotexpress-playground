@@ -17,7 +17,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function ChartsGrid() {
   const { charts, dataManager, handleEditChart, setChartRef, chartsRefs } = useCharts();
-  const { exportSingleChartAsPNG } = useChartExports({ charts, chartsRefs: chartsRefs.current });
+  const { handleExportChartAsSVG, handleExportChartAsPNG } = useChartExports({ charts, chartsRefs: chartsRefs.current });
 
   const gridItemsJSX = useMemo(() => {
     return charts.map(chart => (
@@ -25,7 +25,8 @@ export default function ChartsGrid() {
         <GridItem
           onDelete={() => dataManager.deleteChart(chart?.i)}
           onEdit={() => handleEditChart(chart?.i)}
-          onExportAsImage={() => exportSingleChartAsPNG(chart)}
+          onExportAsPNG={() => handleExportChartAsPNG(chart.i)}
+          onExportAsSVG={() => handleExportChartAsSVG(chart.i)}
         >
           <Chart
             chart={chart}
@@ -35,7 +36,7 @@ export default function ChartsGrid() {
         </GridItem>
       </div>
     ));
-  }, [charts, chartsRefs, dataManager, exportSingleChartAsPNG, handleEditChart, setChartRef]);
+  }, [charts, setChartRef, chartsRefs, dataManager, handleEditChart, handleExportChartAsPNG, handleExportChartAsSVG]);
 
   return (
     <main className="flex-grow flex flex-col h-full overflow-y-auto overflow-x-hidden no-scrollbar">
