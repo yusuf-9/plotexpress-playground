@@ -1,9 +1,5 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
-import EChartsReact from "echarts-for-react";
-
-// store
-import { useStore } from "../../contexts/store.context";
 
 // components
 import GridItem from "../grid-item";
@@ -14,37 +10,14 @@ import "react-resizable/css/styles.css";
 import "react-grid-layout/css/styles.css";
 
 // hooks
-import { useDependencyInjector } from "../../contexts/dependency-injector.context";
+import useChartExports from "./hooks/use-chart-exports";
+import useCharts from "./hooks/use-charts";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function ChartsGrid() {
-  const charts = useStore(state => state.charts);
-  const setEditChartId = useStore(state => state.setChartToBeEditedId);
-  const setIsChartEditorModalOpen = useStore(state => state.setIsChartEditorModalOpen);
-
-  const { dataManager } = useDependencyInjector();
-
-  const chartRefsInitial = useMemo(() => {
-    return charts.reduce((acc: Record<string, any>, chart) => {
-      acc[chart.i] = null;
-      return acc;
-    }, {});
-  }, [charts]);
-
-  const chartsRefs = useRef<Record<string, null | EChartsReact>>(chartRefsInitial);
-
-  const setChartRef = useCallback((instance: EChartsReact, chartId: string) => {
-    chartsRefs.current[chartId] = instance;
-  }, []);
-
-  const handleEditChart = useCallback(
-    (chartId: string) => {
-      setEditChartId(chartId);
-      setIsChartEditorModalOpen(true);
-    },
-    [setEditChartId, setIsChartEditorModalOpen]
-  );
+  const { charts, dataManager, handleEditChart, setChartRef, chartsRefs } = useCharts();
+  const { handleExportChartAsSVG, handleExportChartAsPNG } = useChartExports({ charts, chartsRefs: chartsRefs.current });
 
   const gridItemsJSX = useMemo(() => {
     return charts.map(chart => (
@@ -52,11 +25,8 @@ export default function ChartsGrid() {
         <GridItem
           onDelete={() => dataManager.deleteChart(chart?.i)}
           onEdit={() => handleEditChart(chart?.i)}
-          title={
-            chart?.chartSettings?.titleVisibility
-              ? chart?.chartSettings?.title
-              : ""
-          }
+          onExportAsPNG={() => handleExportChartAsPNG(chart.i)}
+          onExportAsSVG={() => handleExportChartAsSVG(chart.i)}
         >
           <Chart
             chart={chart}
@@ -66,7 +36,7 @@ export default function ChartsGrid() {
         </GridItem>
       </div>
     ));
-  }, [charts, chartsRefs, dataManager, handleEditChart, setChartRef]);
+  }, [charts, setChartRef, chartsRefs, dataManager, handleEditChart, handleExportChartAsPNG, handleExportChartAsSVG]);
 
   return (
     <main className="flex-grow flex flex-col h-full overflow-y-auto overflow-x-hidden no-scrollbar">

@@ -7,7 +7,7 @@ import BaseChartModel from "../chart";
 import { LineChartConfig } from "../../types";
 
 interface LineChartModelType {
-  getChartConfig: (tracesConfig: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]) => EChartsOption;
+  getChartConfig: (tracesConfig: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"], theme: "light" | "dark") => EChartsOption;
   getSeriesData: (tracesConfig: LineChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
@@ -52,7 +52,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the line chart.
    */
-  getChartConfig(traces: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"]): EChartsOption {
+  getChartConfig(traces: LineChartConfig["tracesConfig"], chartSettings: LineChartConfig["chartSettings"], theme: "light" | "dark"): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       ...traces[index]?.settings,
@@ -68,7 +68,10 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
         bottom: 50,
       },
       title: {
-        show: false,
+        text: chartSettings.title,
+        show: chartSettings.titleVisibility,
+        top: 0,
+        left: "center",
       },
       tooltip: {
         trigger: "axis",
@@ -76,8 +79,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
       legend: {
         show: chartSettings.legendVisibility,
         data: seriesConfig.map(series => series.name),
-        bottom: chartSettings.legendPosition === "bottom" ? 0 : undefined,
-        top: chartSettings.legendPosition === "top" ? 0 : undefined,
+        bottom: 0,
       },
       xAxis: {
         type: "category", // TODO: set this dynamically for timeseries, logging, etc kinds of data
@@ -119,6 +121,7 @@ class LineChartModel extends BaseChartModel implements LineChartModelType {
         },
         id: series.id,
       })),
+      backgroundColor: theme === "dark" ? "#000" : "#fff",
     };
   }
 }

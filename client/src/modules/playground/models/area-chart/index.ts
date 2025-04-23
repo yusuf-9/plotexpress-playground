@@ -7,7 +7,7 @@ import BaseChartModel from "../chart";
 import { AreaChartConfig } from "../../types";
 
 interface AreaChartModelType {
-  getChartConfig: (tracesConfig: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"]) => EChartsOption;
+  getChartConfig: (tracesConfig: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"], theme: "light" | "dark") => EChartsOption;
   getSeriesData: (tracesConfig: AreaChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
@@ -52,7 +52,7 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the area chart.
    */
-  getChartConfig(traces: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"]): EChartsOption {
+  getChartConfig(traces: AreaChartConfig["tracesConfig"], chartSettings: AreaChartConfig["chartSettings"], theme: "light" | "dark"): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       ...traces[index]?.settings,
@@ -68,7 +68,10 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
         bottom: 50,
       },
       title: {
-        show: false,
+        text: chartSettings.title,
+        show: chartSettings.titleVisibility,
+        top: 0,
+        left: "center",
       },
       tooltip: {
         trigger: "axis",
@@ -76,8 +79,7 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
       legend: {
         show: chartSettings.legendVisibility,
         data: seriesConfig.map(series => series.name),
-        bottom: chartSettings.legendPosition === "bottom" ? 0 : undefined,
-        top: chartSettings.legendPosition === "top" ? 0 : undefined,
+        bottom: 0,
       },
       xAxis: {
         type: "category", // TODO: set this dynamically for timeseries, logging, etc kinds of data
@@ -112,6 +114,7 @@ class AreaChartModel extends BaseChartModel implements AreaChartModelType {
         },
         id: series.id,
       })),
+      backgroundColor: theme === "dark" ? "#000" : "#FFF"
     };
   }
 }

@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 // types
 import { Chart } from "@/modules/playground/types";
@@ -21,13 +21,13 @@ const GeneralSettings: React.FC<Props> = props => {
 
   const [localChartSettings, setLocalChartSettings] = useState<Chart["chartSettings"]>(chartSettings);
 
-  const handleSettingChange = (item: keyof Chart["chartSettings"], value: any) => {
+  const handleSettingChange = useCallback((item: keyof Chart["chartSettings"], value: any) => {
     setLocalChartSettings(prev => ({
       ...prev,
       [item]: value
     }));
     onSettingChange(item, value);
-  };
+  }, [onSettingChange]);
 
   const generalSettingInputsJsx = useMemo(() => {
     const inputsConfig = settingInputsConfig.map(input => ({

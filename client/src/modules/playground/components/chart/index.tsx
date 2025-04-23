@@ -30,7 +30,10 @@ const Chart = memo((props: Props) => {
       <ReactECharts
         option={chartConfig}
         ref={setChartRef}
-        style={{height: '100%', width: '100%'}}
+        style={{ height: '100%', width: '100%' }}
+        opts={{
+          renderer: "svg"
+        }}
       />
     );
   }, [chartConfig, setChartRef]);

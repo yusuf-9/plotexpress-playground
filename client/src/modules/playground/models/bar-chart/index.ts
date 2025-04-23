@@ -7,7 +7,7 @@ import BaseChartModel from "../chart";
 import { BarChartConfig } from "../../types";
 
 interface BarChartModelType {
-  getChartConfig: (tracesConfig: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"]) => EChartsOption;
+  getChartConfig: (tracesConfig: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"], theme: "light" | "dark") => EChartsOption;
   getSeriesData: (tracesConfig: BarChartConfig["tracesConfig"]) => [xAxisData: Array<string | number>, yAxisData: Array<(string | number)[]>];
 }
 
@@ -65,7 +65,7 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the bar chart.
    */
-  getChartConfig(traces: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"]): EChartsOption {
+  getChartConfig(traces: BarChartConfig["tracesConfig"], chartSettings: BarChartConfig["chartSettings"], theme: "light" | "dark"): EChartsOption {
     const [xCategories, yDataSets] = this.getSeriesData(traces);
     const seriesConfig = yDataSets.map((dataSet, index) => ({
       data: dataSet,
@@ -81,7 +81,10 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
         bottom: 50,
       },
       title: {
-        show: false,
+        text: chartSettings.title,
+        show: chartSettings.titleVisibility,
+        top: 0,
+        left: "center",
       },
       tooltip: {
         trigger: "axis",
@@ -92,8 +95,7 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
       legend: {
         show: chartSettings.legendVisibility,
         data: seriesConfig.map(series => series.name),
-        bottom: chartSettings.legendPosition === "bottom" ? 0 : undefined,
-        top: chartSettings.legendPosition === "top" ? 0 : undefined,
+        bottom: 0,
       },
       xAxis: {
         type: "category", // TODO: set this dynamically for timeseries, logging, etc kinds of data
@@ -122,6 +124,7 @@ class BarChartModel extends BaseChartModel implements BarChartModelType {
         barWidth: series.binWidth + "%",
         id: series.id,
       })),
+      backgroundColor: theme === "dark" ? "#000" : "#FFF"
     };
   }
 }

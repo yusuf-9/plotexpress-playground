@@ -16,7 +16,7 @@ export const DEFAULT_CHART_SETTINGS: BaseChartSettings = {
   [DEFAULT_CHART_SETTINGS_OPTION_KEYS.title]: "",
   [DEFAULT_CHART_SETTINGS_OPTION_KEYS.titleVisibility]: true,
   [DEFAULT_CHART_SETTINGS_OPTION_KEYS.legendVisibility]: true,
-  [DEFAULT_CHART_SETTINGS_OPTION_KEYS.legendPosition]: "top",
+  [DEFAULT_CHART_SETTINGS_OPTION_KEYS.legendPosition]: "bottom",
   [DEFAULT_CHART_SETTINGS_OPTION_KEYS.xAxisLabel]: "",
   [DEFAULT_CHART_SETTINGS_OPTION_KEYS.xAxisLimits]: {
     min: "",

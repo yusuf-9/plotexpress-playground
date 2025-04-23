@@ -7,7 +7,7 @@ import BaseChartModel from "../chart";
 import { ScatterChartConfig } from "../../types";
 
 interface ScatterChartModelType {
-  getChartConfig: (tracesConfig: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]) => EChartsOption;
+  getChartConfig: (tracesConfig: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"], theme: "light" | "dark") => EChartsOption;
   getSeriesData: (tracesConfig: ScatterChartConfig["tracesConfig"]) => Array<Array<[xPoint: any, yPoint: any]>>;
 }
 
@@ -52,7 +52,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
    * @param traces - The configuration of the chart traces.
    * @returns The ECharts option object configured for the scatter chart.
    */
-  getChartConfig(traces: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"]): EChartsOption {
+  getChartConfig(traces: ScatterChartConfig["tracesConfig"], chartSettings: ScatterChartConfig["chartSettings"], theme: "light" | "dark"): EChartsOption {
     const seriesData = this.getSeriesData(traces);
     const seriesConfig = seriesData.map((dataSet, index) => ({
       ...traces[index]?.settings,
@@ -69,7 +69,10 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
         bottom: 50,
       },
       title: {
-        show: false,
+        text: chartSettings.title,
+        show: chartSettings.titleVisibility,
+        top: 0,
+        left: "center",
       },
       tooltip: {
         trigger: "item",
@@ -94,8 +97,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
       legend: {
         show: chartSettings.legendVisibility,
         data: seriesConfig.map(series => series.name),
-        bottom: chartSettings.legendPosition === "bottom" ? 0 : undefined,
-        top: chartSettings.legendPosition === "top" ? 0 : undefined,
+        bottom: 0,
       },
       xAxis: {
         type: "value", // TODO: set this dynamically for timeseries, logging, etc kinds of data
@@ -121,6 +123,7 @@ class ScatterChartModel extends BaseChartModel implements ScatterChartModelType 
         },
         id: series.id,
       })),
+      backgroundColor: theme === "dark" ? "#000" : "#FFF"
     };
   }
 }
