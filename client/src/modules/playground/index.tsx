@@ -9,6 +9,7 @@ import PlaygroundLoader from "./components/loader";
 // contexts
 import StoreProvider from "./contexts/store.context";
 import DependencyInjector from "./contexts/dependency-injector.context";
+import ShareWorkspaceModal from "./components/modal/share-workspace";
 
 export default function Playground() {
   return (
@@ -31,6 +32,7 @@ export default function Playground() {
           {/* Modals */}
           <CreateChartModal />
           <DataUploadModal />
+          <ShareWorkspaceModal />
         </PlaygroundLoader>
       </DependencyInjector>
     </StoreProvider>

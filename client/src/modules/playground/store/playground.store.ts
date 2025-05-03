@@ -46,10 +46,12 @@ export interface PlaygroundStore {
   setIsChartEditorModalOpen: (payload: boolean) => void;
   isDataUploadModalOpen: boolean;
   setIsDataUploadModalOpen: (payload: boolean) => void;
+  isShareWorkspaceModalOpen: boolean;
+  setIsShareWorkspaceModalOpen: (payload: boolean) => void;
 }
 
 const createPlaygroundStore = () => {
-  return create<PlaygroundStore>((set) => ({
+  return create<PlaygroundStore>(set => ({
     // workspace state
     workspace: {
       name: "",
@@ -173,6 +175,11 @@ const createPlaygroundStore = () => {
     setIsDataUploadModalOpen: (payload: boolean) =>
       set({
         isDataUploadModalOpen: payload,
+      }),
+    isShareWorkspaceModalOpen: false,
+    setIsShareWorkspaceModalOpen: (payload: boolean) =>
+      set({
+        isShareWorkspaceModalOpen: payload,
       }),
   }));
 };

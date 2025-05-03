@@ -54,8 +54,6 @@ const DataUploadSection = (props: Props) => {
     processType,
   } = props;
   
-  console.log({error})
-
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: onFileDrop,
     noClick: false,
