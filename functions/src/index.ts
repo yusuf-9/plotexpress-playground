@@ -1,4 +1,9 @@
 import { parseCSV, parseExcel, validateFileType, validateFileSize, convertToArrayOfObjects } from './utils';
+import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
+import { HttpRequest } from '@aws-sdk/protocol-http';
+import { Hash } from '@aws-sdk/hash-node';
+import { formatUrl } from '@aws-sdk/util-format-url';
+import { nanoid } from 'nanoid';
 
 interface FileData {
 	name: string;
@@ -7,7 +12,11 @@ interface FileData {
 }
 
 export interface Env {
-	R2_BASE_URL: string;
+	R2_ACCESS_KEY_ID: string;
+	R2_SECRET_ACCESS_KEY: string;
+	R2_BUCKET_NAME: string;
+	R2_REGION: string;
+	R2_ENDPOINT: string;
 }
 
 export default {
@@ -91,7 +100,7 @@ export default {
 			}
 		}
 
-		// Health check endpoint
+		// GET test-files metadata
 		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-files-metadata') {
 			return new Response(
 				JSON.stringify({
@@ -100,73 +109,73 @@ export default {
 							label: 'Stock Prices',
 							description: 'Daily open, high, low, close prices and trading volumes for popular tech stocks over the past month.',
 							category: 'Finance & Economics',
-							link: env.R2_BASE_URL + '/stock_prices.json',
+							link: env.R2_ENDPOINT + '/stock_prices.json',
 						},
 						{
 							label: 'Inflation Rates',
 							description: 'Yearly inflation rates from 2010 to 2024 for major global economies.',
 							category: 'Finance & Economics',
-							link: env.R2_BASE_URL + '/inflation_rates.json',
+							link: env.R2_ENDPOINT + '/inflation_rates.json',
 						},
 						{
 							label: 'Cryptocurrency Trends',
 							description: 'Daily price trends for major cryptocurrencies like BTC and ETH over the past month.',
 							category: 'Finance & Economics',
-							link: env.R2_BASE_URL + '/crypto_trends.json',
+							link: env.R2_ENDPOINT + '/crypto_trends.json',
 						},
 						{
 							label: 'Population Growth',
 							description: 'Yearly population data from 2000 to 2024 for several major countries.',
 							category: 'Demographics & Society',
-							link: env.R2_BASE_URL + '/population_growth.json',
+							link: env.R2_ENDPOINT + '/population_growth.json',
 						},
 						{
 							label: 'Birth and Death Rates',
 							description: 'Annual birth and death rates from 2000 to 2024 across selected countries.',
 							category: 'Demographics & Society',
-							link: env.R2_BASE_URL + '/birth_death_rates.json',
+							link: env.R2_ENDPOINT + '/birth_death_rates.json',
 						},
 						{
 							label: 'Average Temperature',
 							description: 'Average yearly temperature (in Celsius) in global cities from 2000 to 2024.',
 							category: 'Environment & Nature',
-							link: env.R2_BASE_URL + '/avg_temperature.json',
+							link: env.R2_ENDPOINT + '/avg_temperature.json',
 						},
 						{
 							label: 'Rainfall by Region',
 							description: 'Monthly rainfall data (in millimeters) for various geographic regions.',
 							category: 'Environment & Nature',
-							link: env.R2_BASE_URL + '/rainfall.json',
+							link: env.R2_ENDPOINT + '/rainfall.json',
 						},
 						{
 							label: 'Student Grades',
 							description: 'Simulated grades for students across four subjects: Math, Science, History, and English.',
 							category: 'Education & Learning',
-							link: env.R2_BASE_URL + '/student_grades.json',
+							link: env.R2_ENDPOINT + '/student_grades.json',
 						},
 						{
 							label: 'Test Scores Over Time',
 							description: 'Average test scores by subject from 2010 to 2024.',
 							category: 'Education & Learning',
-							link: env.R2_BASE_URL + '/test_scores.json',
+							link: env.R2_ENDPOINT + '/test_scores.json',
 						},
 						{
 							label: 'Fitness Tracking',
 							description: 'Simulated daily fitness stats for users, including steps, calories burned, and active minutes.',
 							category: 'Fun Ideas',
-							link: env.R2_BASE_URL + '/fitness_tracking.json',
+							link: env.R2_ENDPOINT + '/fitness_tracking.json',
 						},
 						{
 							label: 'Music Listening Stats',
 							description: 'Daily music listening stats for users including number of songs played, minutes listened, and top genre.',
 							category: 'Fun Ideas',
-							link: env.R2_BASE_URL + '/music_listening_stats.json',
+							link: env.R2_ENDPOINT + '/music_listening_stats.json',
 						},
 						{
 							label: 'Retail Transactions',
 							description: 'Simulated retail transactions for users across different categories.',
 							category: 'Large Files',
-							link: env.R2_BASE_URL + '/retail_transactions.json',
+							link: env.R2_ENDPOINT + '/retail_transactions.json',
 						},
 					],
 				}),
@@ -178,6 +187,56 @@ export default {
 				}
 			);
 		}
+
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/generate-upload-urls') {
+			const folderId = nanoid();
+
+			const dataKey = `${folderId}/data.json`;
+			const configKey = `${folderId}/config.json`;
+
+			const signer = new S3RequestPresigner({
+				region: env.R2_REGION,
+				credentials: {
+					accessKeyId: env.R2_ACCESS_KEY_ID,
+					secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+				},
+				sha256: Hash.bind(null, 'sha256'),
+			});
+
+			const createSignedUrl = async (key: string) => {
+				const request = new HttpRequest({
+					method: 'PUT',
+					protocol: 'https:',
+					hostname: env.R2_ENDPOINT,
+					headers: {
+						host: env.R2_ENDPOINT,
+					},
+				});
+
+				const signed = await signer.presign(request, { expiresIn: 900 }); // 15 min
+				return formatUrl(signed);
+			};
+
+			const dataSignedUrl = await createSignedUrl(dataKey);
+			const configSignedUrl = await createSignedUrl(configKey);
+
+			return new Response(
+				JSON.stringify({
+					data: {
+						dataFileUploadURI: dataSignedUrl,
+						configFileUploadURI: configSignedUrl,
+						sharedWorkspaceId: folderId,
+					},
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+					},
+				}
+			);
+		}
+
 		return new Response('Not Found', {
 			status: 404,
 			headers: {
