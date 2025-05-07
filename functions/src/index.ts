@@ -102,73 +102,73 @@ export default {
 							label: 'Stock Prices',
 							description: 'Daily open, high, low, close prices and trading volumes for popular tech stocks over the past month.',
 							category: 'Finance & Economics',
-							link: env.R2_ENDPOINT + '/stock_prices.json',
+							fileName: 'stock_prices.json',
 						},
 						{
 							label: 'Inflation Rates',
 							description: 'Yearly inflation rates from 2010 to 2024 for major global economies.',
 							category: 'Finance & Economics',
-							link: env.R2_ENDPOINT + '/inflation_rates.json',
+							fileName: 'inflation_rates.json',
 						},
 						{
 							label: 'Cryptocurrency Trends',
 							description: 'Daily price trends for major cryptocurrencies like BTC and ETH over the past month.',
 							category: 'Finance & Economics',
-							link: env.R2_ENDPOINT + '/crypto_trends.json',
+							fileName: 'crypto_trends.json',
 						},
 						{
 							label: 'Population Growth',
 							description: 'Yearly population data from 2000 to 2024 for several major countries.',
 							category: 'Demographics & Society',
-							link: env.R2_ENDPOINT + '/population_growth.json',
+							fileName: 'population_growth.json',
 						},
 						{
 							label: 'Birth and Death Rates',
 							description: 'Annual birth and death rates from 2000 to 2024 across selected countries.',
 							category: 'Demographics & Society',
-							link: env.R2_ENDPOINT + '/birth_death_rates.json',
+							fileName: 'birth_rates.json',
 						},
 						{
 							label: 'Average Temperature',
 							description: 'Average yearly temperature (in Celsius) in global cities from 2000 to 2024.',
 							category: 'Environment & Nature',
-							link: env.R2_ENDPOINT + '/avg_temperature.json',
+							fileName: 'avg_temperature.json',
 						},
 						{
 							label: 'Rainfall by Region',
 							description: 'Monthly rainfall data (in millimeters) for various geographic regions.',
 							category: 'Environment & Nature',
-							link: env.R2_ENDPOINT + '/rainfall.json',
+							fileName: 'rainfall.json',
 						},
 						{
 							label: 'Student Grades',
 							description: 'Simulated grades for students across four subjects: Math, Science, History, and English.',
 							category: 'Education & Learning',
-							link: env.R2_ENDPOINT + '/student_grades.json',
+							fileName: 'student_grades.json',
 						},
 						{
 							label: 'Test Scores Over Time',
 							description: 'Average test scores by subject from 2010 to 2024.',
 							category: 'Education & Learning',
-							link: env.R2_ENDPOINT + '/test_scores.json',
+							fileName: 'test_scores.json',
 						},
 						{
 							label: 'Fitness Tracking',
 							description: 'Simulated daily fitness stats for users, including steps, calories burned, and active minutes.',
 							category: 'Fun Ideas',
-							link: env.R2_ENDPOINT + '/fitness_tracking.json',
+							fileName: 'fitness_tracking.json',
 						},
 						{
 							label: 'Music Listening Stats',
 							description: 'Daily music listening stats for users including number of songs played, minutes listened, and top genre.',
 							category: 'Fun Ideas',
-							link: env.R2_ENDPOINT + '/music_listening_stats.json',
+							fileName: 'music_listening_stats.json',
 						},
 						{
 							label: 'Retail Transactions',
 							description: 'Simulated retail transactions for users across different categories.',
 							category: 'Large Files',
-							link: env.R2_ENDPOINT + '/retail_transactions.json',
+							fileName: 'retail_transactions.json',
 						},
 					],
 				}),
@@ -217,9 +217,11 @@ export default {
 
 			return new Response(
 				JSON.stringify({
-					dataFileUploadURI: signedDataUrl,
-					configFileUploadURI: signedConfigUrl,
-					sharedWorkspaceId: folderId,
+					data: {
+						dataFileUploadURI: signedDataUrl,
+						configFileUploadURI: signedConfigUrl,
+						sharedWorkspaceId: folderId,
+					}
 				}),
 				{
 					headers: {
@@ -230,8 +232,7 @@ export default {
 			);
 		}
 
-		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-file-urls') {
-			const folderId = "test-files"
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/generate-file-access-url') {
 			const region = env.R2_REGION || 'auto';
 			const baseURL = env.R2_ENDPOINT;
 			const expirationSeconds = 15 * 60; // 15 minutes
@@ -243,34 +244,32 @@ export default {
 				region,
 			});
 
-			const fileNames = [
-				folderId + "/test_scores.json",
-				folderId + "/student_grades.json",
-				folderId + "/stock_prices.json",
-				folderId + "/rainfall.json",
-				folderId + "/population_growth.json",
-				folderId + "/music_listening_stats.json",
-				folderId + "/fitness_tracking.json",
-				folderId + "/inflation_rates.json",
-				folderId + "/crypto_trends.json",
-				folderId + "/avg_temperature.json",
-				folderId + "/retail_transactions.json",
-				folderId + "/birth_rates.json",
-			]
+			// Parse the URL and get the query parameter
+			const url = new URL(request.url);
+			const fileNameParam = url.searchParams.get('file_name');
 
-			const signedURLs = await Promise.all(fileNames.map(async (name) => {
-				const url = (await aws.sign(
-					new Request(`${baseURL}/${name}?X-Amz-Expires=${expirationSeconds}`, {
-						method: 'PUT',
+			if (!fileNameParam) {
+				return new Response(JSON.stringify({ error: 'Missing file_name query parameter' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+
+			// Decode URI component to allow slashes and other safe characters
+			const fileKey = decodeURIComponent(fileNameParam);
+
+			const signedUrl = (
+				await aws.sign(
+					new Request(`${baseURL}/${fileKey}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'GET',
 					}),
 					{ aws: { signQuery: true } }
-				)).url.toString()
-				return url;
-			}))
+				)
+			).url.toString();
 
 			return new Response(
 				JSON.stringify({
-					signedURLs
+					data: signedUrl,
 				}),
 				{
 					headers: {
@@ -280,6 +279,7 @@ export default {
 				}
 			);
 		}
+
 
 		return new Response('Not Found', {
 			status: 404,
