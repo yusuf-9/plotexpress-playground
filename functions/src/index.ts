@@ -1,21 +1,14 @@
 import { parseCSV, parseExcel, validateFileType, validateFileSize, convertToArrayOfObjects } from './utils';
-import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
-import { HttpRequest } from '@aws-sdk/protocol-http';
-import { Hash } from '@aws-sdk/hash-node';
-import { formatUrl } from '@aws-sdk/util-format-url';
+import { AwsClient } from 'aws4fetch';
 import { nanoid } from 'nanoid';
 
-interface FileData {
-	name: string;
-	type: string;
-	data: ArrayBuffer;
-}
-
 export interface Env {
+	R2_BASE_URL: string;
 	R2_ACCESS_KEY_ID: string;
 	R2_SECRET_ACCESS_KEY: string;
 	R2_BUCKET_NAME: string;
 	R2_REGION: string;
+	R2_ACCOUNT_ID: string;
 	R2_ENDPOINT: string;
 }
 
@@ -189,44 +182,95 @@ export default {
 		}
 
 		if (request.method === 'GET' && new URL(request.url).pathname === '/api/generate-upload-urls') {
-			const folderId = nanoid();
+			const folderId = nanoid()
+			const region = env.R2_REGION || 'auto';
+			const baseURL = env.R2_ENDPOINT;
+			const expirationSeconds = 15 * 60; // 15 minutes
+
+			const aws = new AwsClient({
+				accessKeyId: env.R2_ACCESS_KEY_ID,
+				secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+				service: 's3',
+				region,
+			});
 
 			const dataKey = `${folderId}/data.json`;
 			const configKey = `${folderId}/config.json`;
 
-			const signer = new S3RequestPresigner({
-				region: env.R2_REGION,
-				credentials: {
-					accessKeyId: env.R2_ACCESS_KEY_ID,
-					secretAccessKey: env.R2_SECRET_ACCESS_KEY,
-				},
-				sha256: Hash.bind(null, 'sha256'),
-			});
+			const signedDataUrl = (
+				await aws.sign(
+					new Request(`${baseURL}/${dataKey}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'PUT',
+					}),
+					{ aws: { signQuery: true } }
+				)
+			).url.toString();
 
-			const createSignedUrl = async (key: string) => {
-				const request = new HttpRequest({
-					method: 'PUT',
-					protocol: 'https:',
-					hostname: env.R2_ENDPOINT,
-					headers: {
-						host: env.R2_ENDPOINT,
-					},
-				});
-
-				const signed = await signer.presign(request, { expiresIn: 900 }); // 15 min
-				return formatUrl(signed);
-			};
-
-			const dataSignedUrl = await createSignedUrl(dataKey);
-			const configSignedUrl = await createSignedUrl(configKey);
+			const signedConfigUrl = (
+				await aws.sign(
+					new Request(`${baseURL}/${configKey}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'PUT',
+					}),
+					{ aws: { signQuery: true } }
+				)
+			).url.toString();
 
 			return new Response(
 				JSON.stringify({
-					data: {
-						dataFileUploadURI: dataSignedUrl,
-						configFileUploadURI: configSignedUrl,
-						sharedWorkspaceId: folderId,
+					dataFileUploadURI: signedDataUrl,
+					configFileUploadURI: signedConfigUrl,
+					sharedWorkspaceId: folderId,
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
 					},
+				}
+			);
+		}
+
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-file-urls') {
+			const folderId = "test-files"
+			const region = env.R2_REGION || 'auto';
+			const baseURL = env.R2_ENDPOINT;
+			const expirationSeconds = 15 * 60; // 15 minutes
+
+			const aws = new AwsClient({
+				accessKeyId: env.R2_ACCESS_KEY_ID,
+				secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+				service: 's3',
+				region,
+			});
+
+			const fileNames = [
+				folderId + "/test_scores.json",
+				folderId + "/student_grades.json",
+				folderId + "/stock_prices.json",
+				folderId + "/rainfall.json",
+				folderId + "/population_growth.json",
+				folderId + "/music_listening_stats.json",
+				folderId + "/fitness_tracking.json",
+				folderId + "/inflation_rates.json",
+				folderId + "/crypto_trends.json",
+				folderId + "/avg_temperature.json",
+				folderId + "/retail_transactions.json",
+				folderId + "/birth_rates.json",
+			]
+
+			const signedURLs = await Promise.all(fileNames.map(async (name) => {
+				const url = (await aws.sign(
+					new Request(`${baseURL}/${name}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'PUT',
+					}),
+					{ aws: { signQuery: true } }
+				)).url.toString()
+				return url;
+			}))
+
+			return new Response(
+				JSON.stringify({
+					signedURLs
 				}),
 				{
 					headers: {
