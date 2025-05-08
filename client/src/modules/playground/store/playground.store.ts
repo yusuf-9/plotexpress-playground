@@ -48,6 +48,10 @@ export interface PlaygroundStore {
   setIsDataUploadModalOpen: (payload: boolean) => void;
   isShareWorkspaceModalOpen: boolean;
   setIsShareWorkspaceModalOpen: (payload: boolean) => void;
+
+  // shared workspace status state
+  isSharedWorkspace: boolean;
+  setIsSharedWorkspace: (payload: boolean) => void;
 }
 
 const createPlaygroundStore = () => {
@@ -181,6 +185,13 @@ const createPlaygroundStore = () => {
       set({
         isShareWorkspaceModalOpen: payload,
       }),
+
+    // shared workspace state
+    isSharedWorkspace: false,
+    setIsSharedWorkspace: (payload: boolean) =>
+      set({
+        isSharedWorkspace: payload
+      })
   }));
 };
 

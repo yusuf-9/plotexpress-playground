@@ -8,7 +8,7 @@ import axiosInstance from "@/common/services/axios";
 import { retryPromiseIfFails } from "@/common/utils";
 
 // constants
-import { UPLOADED_FILE_DATA_KEY } from "@/modules/playground/constants";
+import { SHARED_WORKSPACE_QUERY_PARAM_KEY, SHARED_WORKSPACE_FILE_DATA_KEY } from "@/modules/playground/constants";
 
 // hooks
 import { useStore } from "@/modules/playground/contexts/store.context";
@@ -58,7 +58,7 @@ export default function useDataUpload() {
       try {
         await retryPromiseIfFails(async () => {
           return await axiosBase.put(uploadURL, JSON.stringify({
-            [UPLOADED_FILE_DATA_KEY]: files,
+            [SHARED_WORKSPACE_FILE_DATA_KEY]: files,
           }), { method: "put" });
         });
       } catch (error) {
@@ -73,7 +73,7 @@ export default function useDataUpload() {
       try {
         await retryPromiseIfFails(async () => {
           return await axiosBase.put(uploadURL, JSON.stringify({
-            [UPLOADED_FILE_DATA_KEY]: {
+            [SHARED_WORKSPACE_FILE_DATA_KEY]: {
               workspaceName,
               charts,
             },
@@ -111,7 +111,7 @@ export default function useDataUpload() {
         percentageCompletion: 100,
       }));
 
-      setShareLink(`${window.location.origin}?sid=${sharedWorkspaceId}`);
+      setShareLink(`${window.location.origin}?${SHARED_WORKSPACE_QUERY_PARAM_KEY}=${sharedWorkspaceId}`);
       setTimeout(() => {
         setUploadStep("completed");
       }, 500);

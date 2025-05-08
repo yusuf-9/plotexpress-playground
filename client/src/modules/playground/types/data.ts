@@ -13,5 +13,4 @@ export type FileData = {
 
 export type Workspace = {
   name: string;
-  lastUpdated: string;
 }
