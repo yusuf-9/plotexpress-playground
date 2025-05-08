@@ -15,9 +15,12 @@ import { EVENTS } from "@/modules/playground/constants/events";
 
 // hooks
 import { useDependencyInjector } from "@/modules/playground/contexts/dependency-injector.context";
+import { useStore } from "@/modules/playground/contexts/store.context";
 
 export default function ActionsSidebarSection() {
   const { eventManager } = useDependencyInjector();
+
+  const setIsShareWorkspaceOpen = useStore(store => store.setIsShareWorkspaceModalOpen);
 
   const handleExportChartsAsPNG = () => {
     eventManager.emit(EVENTS.EXPORT_CHARTS_AS_PNG);
@@ -35,7 +38,10 @@ export default function ActionsSidebarSection() {
     <div className="flex flex-col">
       <h3 className="font-semibold mb-2 text-foreground">Actions</h3>
       <div className="flex flex-col gap-2">
-        <Button variant="default">
+        <Button
+          variant="default"
+          onClick={() => setIsShareWorkspaceOpen(true)}
+        >
           <Share2 className="mr-2 h-4 w-4" />
           Share
         </Button>

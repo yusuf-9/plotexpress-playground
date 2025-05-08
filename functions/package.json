@@ -18,6 +18,8 @@
 		"wrangler": "^4.0.0"
 	},
 	"dependencies": {
+		"aws4fetch": "^1.0.20",
+		"nanoid": "^5.1.5",
 		"papaparse": "^5.5.2",
 		"xlsx": "^0.18.5"
 	}

@@ -9,7 +9,7 @@ import { useDependencyInjector } from "../../contexts/dependency-injector.contex
 
 // StoreProvider component
 export const LoaderProvider = (props: PropsWithChildren) => {
-  const { children} = props;
+  const { children } = props;
 
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [loadingPercentage, setLoadingPercentage] = useState<number>(10);
@@ -20,15 +20,16 @@ export const LoaderProvider = (props: PropsWithChildren) => {
     if (!appLoader || isAppLoaded) return;
 
     try {
-      await appLoader.loadCachedFilesAndCharts({
+      await appLoader.loadApp({
         onProgress: (percentage: number) => setLoadingPercentage(percentage),
       });
-      setIsAppLoaded(true)
     } catch (error) {
       console.error("Failed to load workspace:", error);
-      toast.error("Failed to load the workspace. Please reload the page.", {
+      toast.error("Failed to load the workspace...", {
         description: error instanceof Error ? error.message : "Something went wrong",
-      })
+      });
+    } finally {
+      setIsAppLoaded(true);
     }
   }, [appLoader, isAppLoaded]);
 

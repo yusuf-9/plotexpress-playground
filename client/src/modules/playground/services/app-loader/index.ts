@@ -1,4 +1,5 @@
 import { StoreApi, UseBoundStore } from "zustand";
+import axiosBase from "axios";
 
 // services
 import IndexedDBService from "../indexed-db";
@@ -9,7 +10,18 @@ import { Chart, IndexedDBCachedFile } from "../../types";
 import { FileData } from "../../types";
 
 // constants
-import { INDEXED_DB_STORES } from "../../constants";
+import {
+  INDEXED_DB_STORES,
+  SHARED_WORKSPACE_FILE_DATA_KEY,
+  SHARED_WORKSPACE_FILE_NAMES,
+  SHARED_WORKSPACE_QUERY_PARAM_KEY,
+} from "../../constants";
+
+// api
+import { getFileAccessLink } from "../../api";
+
+// utils
+import { retryPromiseIfFails } from "@/common/utils";
 
 export default class AppLoader {
   protected storeRef: UseBoundStore<StoreApi<PlaygroundStore>>;
@@ -20,7 +32,78 @@ export default class AppLoader {
     this.indexedDbManager = indexedDbManager;
   }
 
-  public async loadCachedFilesAndCharts({ onProgress }: { onProgress: (percentage: number) => void }) {
+  /**
+   * Public function to handle loading the app
+   * Checks if the workspace is shared or not, and loads the correct appState
+   */
+  public async loadApp({ onProgress }: { onProgress: (percentage: number) => void }) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const sharedWorkspaceId = searchParams.get(SHARED_WORKSPACE_QUERY_PARAM_KEY);
+
+    const isSharedWorkspace = Boolean(sharedWorkspaceId && typeof sharedWorkspaceId === "string");
+    if (isSharedWorkspace) {
+      await this.loadSharedWorkspace(sharedWorkspaceId as string, onProgress);
+      return;
+    }
+
+    await this.loadCachedFilesAndCharts(onProgress);
+  }
+
+  private async loadSharedWorkspace(workspaceId: string, onProgress: (percentage: number) => void) {
+    /**
+     * 1. Generates signed URLs for shared workspace files
+     * 2. Fetches the file data of the shared workspace and loads it into the store
+     * 3. Fetches the config of the workspace along with the charts and loads it into the store
+     * 4. Sets the global flag for shared workspace
+     */
+    try {
+      onProgress(30);
+
+      // Get signed URLs
+      const [dataFileSignedURL, configFileSignedURL] = await Promise.all([
+        retryPromiseIfFails(() => getFileAccessLink(workspaceId + "/" + SHARED_WORKSPACE_FILE_NAMES.DATA_FILE)),
+        retryPromiseIfFails(() => getFileAccessLink(workspaceId + "/" + SHARED_WORKSPACE_FILE_NAMES.CONFIG_FILE)),
+      ]);
+
+      onProgress(60);
+
+      // Fetch data using signed URLs
+      const [dataFileResponse, configFileResponse] = await Promise.all([
+        retryPromiseIfFails(() => axiosBase.get<{ [SHARED_WORKSPACE_FILE_DATA_KEY]: FileData }>(dataFileSignedURL)),
+        retryPromiseIfFails(() =>
+          axiosBase.get<{
+            [SHARED_WORKSPACE_FILE_DATA_KEY]: {
+              workspaceName: string;
+              charts: Chart[];
+            };
+          }>(configFileSignedURL)
+        ),
+      ]);
+
+      // Update store
+      const setFiles = this.storeRef.getState().setFiles;
+      const setCharts = this.storeRef.getState().setCharts;
+      const setWorkspace = this.storeRef.getState().setWorkspace;
+      const setIsSharedWorkspace = this.storeRef.getState().setIsSharedWorkspace;
+
+      setFiles(dataFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY]);
+      setWorkspace({
+        name: configFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY].workspaceName,
+      });
+      setCharts(configFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY].charts);
+
+      setIsSharedWorkspace(true);
+      onProgress(100);
+    } catch (error) {
+      console.error("Error loading shared workspace:", error);
+      throw error;
+    }
+  }
+
+  /***
+   * Private function to load cached files and charts from the indexed-db
+   */
+  private async loadCachedFilesAndCharts(onProgress: (percentage: number) => void) {
     try {
       const setCharts = this.storeRef.getState().setCharts;
       const setFiles = this.storeRef.getState().setFiles;

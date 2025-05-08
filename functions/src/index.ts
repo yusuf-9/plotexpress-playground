@@ -1,13 +1,15 @@
 import { parseCSV, parseExcel, validateFileType, validateFileSize, convertToArrayOfObjects } from './utils';
-
-interface FileData {
-	name: string;
-	type: string;
-	data: ArrayBuffer;
-}
+import { AwsClient } from 'aws4fetch';
+import { nanoid } from 'nanoid';
 
 export interface Env {
 	R2_BASE_URL: string;
+	R2_ACCESS_KEY_ID: string;
+	R2_SECRET_ACCESS_KEY: string;
+	R2_BUCKET_NAME: string;
+	R2_REGION: string;
+	R2_ACCOUNT_ID: string;
+	R2_ENDPOINT: string;
 }
 
 export default {
@@ -91,7 +93,7 @@ export default {
 			}
 		}
 
-		// Health check endpoint
+		// GET test-files metadata
 		if (request.method === 'GET' && new URL(request.url).pathname === '/api/test-files-metadata') {
 			return new Response(
 				JSON.stringify({
@@ -100,73 +102,73 @@ export default {
 							label: 'Stock Prices',
 							description: 'Daily open, high, low, close prices and trading volumes for popular tech stocks over the past month.',
 							category: 'Finance & Economics',
-							link: env.R2_BASE_URL + '/stock_prices.json',
+							fileName: 'test-files/stock_prices.json',
 						},
 						{
 							label: 'Inflation Rates',
 							description: 'Yearly inflation rates from 2010 to 2024 for major global economies.',
 							category: 'Finance & Economics',
-							link: env.R2_BASE_URL + '/inflation_rates.json',
+							fileName: 'test-files/inflation_rates.json',
 						},
 						{
 							label: 'Cryptocurrency Trends',
 							description: 'Daily price trends for major cryptocurrencies like BTC and ETH over the past month.',
 							category: 'Finance & Economics',
-							link: env.R2_BASE_URL + '/crypto_trends.json',
+							fileName: 'test-files/crypto_trends.json',
 						},
 						{
 							label: 'Population Growth',
 							description: 'Yearly population data from 2000 to 2024 for several major countries.',
 							category: 'Demographics & Society',
-							link: env.R2_BASE_URL + '/population_growth.json',
+							fileName: 'test-files/population_growth.json',
 						},
 						{
 							label: 'Birth and Death Rates',
 							description: 'Annual birth and death rates from 2000 to 2024 across selected countries.',
 							category: 'Demographics & Society',
-							link: env.R2_BASE_URL + '/birth_death_rates.json',
+							fileName: 'test-files/birth_rates.json',
 						},
 						{
 							label: 'Average Temperature',
 							description: 'Average yearly temperature (in Celsius) in global cities from 2000 to 2024.',
 							category: 'Environment & Nature',
-							link: env.R2_BASE_URL + '/avg_temperature.json',
+							fileName: 'test-files/avg_temperature.json',
 						},
 						{
 							label: 'Rainfall by Region',
 							description: 'Monthly rainfall data (in millimeters) for various geographic regions.',
 							category: 'Environment & Nature',
-							link: env.R2_BASE_URL + '/rainfall.json',
+							fileName: 'test-files/rainfall.json',
 						},
 						{
 							label: 'Student Grades',
 							description: 'Simulated grades for students across four subjects: Math, Science, History, and English.',
 							category: 'Education & Learning',
-							link: env.R2_BASE_URL + '/student_grades.json',
+							fileName: 'test-files/student_grades.json',
 						},
 						{
 							label: 'Test Scores Over Time',
 							description: 'Average test scores by subject from 2010 to 2024.',
 							category: 'Education & Learning',
-							link: env.R2_BASE_URL + '/test_scores.json',
+							fileName: 'test-files/test_scores.json',
 						},
 						{
 							label: 'Fitness Tracking',
 							description: 'Simulated daily fitness stats for users, including steps, calories burned, and active minutes.',
 							category: 'Fun Ideas',
-							link: env.R2_BASE_URL + '/fitness_tracking.json',
+							fileName: 'test-files/fitness_tracking.json',
 						},
 						{
 							label: 'Music Listening Stats',
 							description: 'Daily music listening stats for users including number of songs played, minutes listened, and top genre.',
 							category: 'Fun Ideas',
-							link: env.R2_BASE_URL + '/music_listening_stats.json',
+							fileName: 'test-files/music_listening_stats.json',
 						},
 						{
 							label: 'Retail Transactions',
 							description: 'Simulated retail transactions for users across different categories.',
 							category: 'Large Files',
-							link: env.R2_BASE_URL + '/retail_transactions.json',
+							fileName: 'test-files/retail_transactions.json',
 						},
 					],
 				}),
@@ -178,6 +180,107 @@ export default {
 				}
 			);
 		}
+
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/generate-upload-urls') {
+			const folderId = nanoid()
+			const region = env.R2_REGION || 'auto';
+			const baseURL = env.R2_ENDPOINT;
+			const expirationSeconds = 15 * 60; // 15 minutes
+
+			const aws = new AwsClient({
+				accessKeyId: env.R2_ACCESS_KEY_ID,
+				secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+				service: 's3',
+				region,
+			});
+
+			const dataKey = `${folderId}/data.json`;
+			const configKey = `${folderId}/config.json`;
+
+			const signedDataUrl = (
+				await aws.sign(
+					new Request(`${baseURL}/${dataKey}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'PUT',
+					}),
+					{ aws: { signQuery: true } }
+				)
+			).url.toString();
+
+			const signedConfigUrl = (
+				await aws.sign(
+					new Request(`${baseURL}/${configKey}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'PUT',
+					}),
+					{ aws: { signQuery: true } }
+				)
+			).url.toString();
+
+			return new Response(
+				JSON.stringify({
+					data: {
+						dataFileUploadURI: signedDataUrl,
+						configFileUploadURI: signedConfigUrl,
+						sharedWorkspaceId: folderId,
+					}
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+					},
+				}
+			);
+		}
+
+		if (request.method === 'GET' && new URL(request.url).pathname === '/api/generate-file-access-url') {
+			const region = env.R2_REGION || 'auto';
+			const baseURL = env.R2_ENDPOINT;
+			const expirationSeconds = 15 * 60; // 15 minutes
+
+			const aws = new AwsClient({
+				accessKeyId: env.R2_ACCESS_KEY_ID,
+				secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+				service: 's3',
+				region,
+			});
+
+			// Parse the URL and get the query parameter
+			const url = new URL(request.url);
+			const fileNameParam = url.searchParams.get('file_name');
+
+			if (!fileNameParam) {
+				return new Response(JSON.stringify({ error: 'Missing file_name query parameter' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+
+			// Decode URI component to allow slashes and other safe characters
+			const fileKey = decodeURIComponent(fileNameParam);
+
+			const signedUrl = (
+				await aws.sign(
+					new Request(`${baseURL}/${fileKey}?X-Amz-Expires=${expirationSeconds}`, {
+						method: 'GET',
+					}),
+					{ aws: { signQuery: true } }
+				)
+			).url.toString();
+
+			return new Response(
+				JSON.stringify({
+					data: signedUrl,
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+					},
+				}
+			);
+		}
+
+
 		return new Response('Not Found', {
 			status: 404,
 			headers: {
