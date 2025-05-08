@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import axiosInstance from "@/common/services/axios";
 import axiosBase from "axios"
 
 // types
@@ -114,6 +115,15 @@ export default function useFile(props: Props) {
     [handleFileUpload]
   );
 
+  const getFileAccessLink = useCallback(async (fileName: string) => {
+    const requestSearchParams = new URLSearchParams({
+      file_name: fileName
+    }).toString()
+
+    const fileLinkResponse = await axiosInstance.get<string>('generate-file-access-url?' + requestSearchParams);
+    return fileLinkResponse.data.data
+  }, [])
+
   const handleLoadTestFile = useCallback(async () => {
     try {
       if (!selectedTestFile) {
@@ -129,7 +139,10 @@ export default function useFile(props: Props) {
         fileName: selectedTestFile?.label,
         processType: "loadTestFile",
       }));
-      const response = await retryPromiseIfFails(async () => await axiosBase.get<ParsedData>(selectedTestFile?.link, {
+
+      const fileAccessLink = await retryPromiseIfFails(async () => getFileAccessLink(selectedTestFile.fileName));
+
+      const response = await retryPromiseIfFails(async () => await axiosBase.get<ParsedData>(fileAccessLink, {
         onDownloadProgress: progressEvent => {
           const downloadProgress = Math.round((progressEvent.loaded / progressEvent.loaded) * 100);
           setFileProcessingState(prev => ({ ...prev, processingProgress: downloadProgress }));
@@ -152,7 +165,7 @@ export default function useFile(props: Props) {
         isProcessing: false,
       }));
     }
-  }, [selectedTestFile, setParsedData]);
+  }, [selectedTestFile, setParsedData, getFileAccessLink]);
 
   useEffect(() => {
     if (areTestFilesLoaded) return;

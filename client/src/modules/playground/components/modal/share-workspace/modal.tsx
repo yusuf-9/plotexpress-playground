@@ -44,7 +44,7 @@ export default function ShareWorkspaceModal(props: Props) {
                   variant="outline"
                   onClick={() => {
                     navigator.clipboard.writeText(shareLink);
-                    toast("Share link copied to clipboard");
+                    toast.success("Share link copied to clipboard");
                   }}
                 >
                   Copy
@@ -78,7 +78,11 @@ export default function ShareWorkspaceModal(props: Props) {
   }, [shareLink, uploadState.error, uploadState.percentageCompletion, uploadStep]);
 
   return (
-    <Dialog open={true}>
+    <Dialog open={true} onOpenChange={() => {
+      if (uploadStep === "completed") {
+        onClose()
+      }
+    }}>
       <DialogContent className="!w-[80vw] !max-w-[1000px] h-[80vh] max-h-[800px] p-0 flex flex-col">
         <DialogHeader className="px-6 py-4">
           <DialogTitle className="text-foreground">Share Workspace</DialogTitle>
@@ -87,11 +91,11 @@ export default function ShareWorkspaceModal(props: Props) {
         {/* Custom Modal Footer */}
         <div className="px-8 py-4 border-t border-border flex">
           <Button
-            variant="destructive"
+            variant={uploadStep === "completed" ? "default" : "destructive"}
             onClick={onClose}
             className="w-full"
           >
-            Cancel
+            {uploadStep === "completed" ? "Done" : "Cancel"}
           </Button>
         </div>
       </DialogContent>

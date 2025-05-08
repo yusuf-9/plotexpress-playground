@@ -1,12 +1,22 @@
-import axiosInstance from "@/common/services/axios";
-import { retryPromiseIfFails } from "@/common/utils";
-import { UPLOADED_FILE_DATA_KEY } from "@/modules/playground/constants";
-import { useStore } from "@/modules/playground/contexts/store.context";
 import { useCallback, useEffect, useState } from "react";
+import axiosBase from "axios"
+
+// lib
+import axiosInstance from "@/common/services/axios";
+
+// utils
+import { retryPromiseIfFails } from "@/common/utils";
+
+// constants
+import { UPLOADED_FILE_DATA_KEY } from "@/modules/playground/constants";
+
+// hooks
+import { useStore } from "@/modules/playground/contexts/store.context";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 
 export default function useDataUpload() {
+
   const [uploadStep, setUploadStep] = useState<
     "checking-data-size" | "generating-signed-urls" | "uploading-files" | "completed"
   >("checking-data-size");
@@ -40,22 +50,19 @@ export default function useDataUpload() {
       configFileUploadURI: string;
       sharedWorkspaceId: string;
     }>("/generate-upload-urls");
-    return [response.data.data.dataFileUploadURI, response.data.data.configFileUploadURI];
+    return [response.data.data.dataFileUploadURI, response.data.data.configFileUploadURI, response.data.data.sharedWorkspaceId];
   }, []);
 
   const uploadDataFile = useCallback(
     async (uploadURL: string) => {
       try {
         await retryPromiseIfFails(async () => {
-          return await fetch(uploadURL, {
-            method: "PUT",
-            body: JSON.stringify({
-              [UPLOADED_FILE_DATA_KEY]: files,
-            }),
-          });
+          return await axiosBase.put(uploadURL, JSON.stringify({
+            [UPLOADED_FILE_DATA_KEY]: files,
+          }), { method: "put" });
         });
       } catch (error) {
-        throw new Error("Failed to upload files: " + (error instanceof Error ? error.message : "Something went wrong"));
+        throw new Error("Failed to upload file: " + (error instanceof Error ? error.message : "Something went wrong"));
       }
     },
     [files]
@@ -65,15 +72,12 @@ export default function useDataUpload() {
     async (uploadURL: string) => {
       try {
         await retryPromiseIfFails(async () => {
-          return await fetch(uploadURL, {
-            method: "PUT",
-            body: JSON.stringify({
-              [UPLOADED_FILE_DATA_KEY]: {
-                workspaceName,
-                charts,
-              },
-            }),
-          });
+          return await axiosBase.put(uploadURL, JSON.stringify({
+            [UPLOADED_FILE_DATA_KEY]: {
+              workspaceName,
+              charts,
+            },
+          }), { method: "PUT" })
         });
       } catch (error) {
         throw new Error(
@@ -86,22 +90,28 @@ export default function useDataUpload() {
 
   const handleCreateSharedWorkspace = useCallback(async () => {
     try {
+      setUploadStep("checking-data-size")
       checkDataSize();
       setUploadState(prev => ({
         ...prev,
         percentageCompletion: 30,
       }));
+
+      setUploadStep("generating-signed-urls")
       const [dataFileUploadURL, configFileUploadURL, sharedWorkspaceId] = await retryPromiseIfFails(generateSignedURLs);
       setUploadState(prev => ({
         ...prev,
         percentageCompletion: 50,
       }));
+
+      setUploadStep("uploading-files")
       await Promise.all([uploadDataFile(dataFileUploadURL), uploadWorkspaceConfigFile(configFileUploadURL)]);
       setUploadState(prev => ({
         ...prev,
         percentageCompletion: 100,
       }));
-      setShareLink(`${window.location.origin}?sid${sharedWorkspaceId}`);
+
+      setShareLink(`${window.location.origin}?sid=${sharedWorkspaceId}`);
       setTimeout(() => {
         setUploadStep("completed");
       }, 500);
