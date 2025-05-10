@@ -13,6 +13,7 @@ export const LoaderProvider = (props: PropsWithChildren) => {
 
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [loadingPercentage, setLoadingPercentage] = useState<number>(10);
+  const [loadingText, setLoadingText] = useState<string>('Loading..');
 
   const { appLoader } = useDependencyInjector();
 
@@ -22,6 +23,7 @@ export const LoaderProvider = (props: PropsWithChildren) => {
     try {
       await appLoader.loadApp({
         onProgress: (percentage: number) => setLoadingPercentage(percentage),
+        setLoadingText
       });
     } catch (error) {
       console.error("Failed to load workspace:", error);
@@ -37,7 +39,7 @@ export const LoaderProvider = (props: PropsWithChildren) => {
     handleLoadAppServices();
   }, [handleLoadAppServices]);
 
-  return isAppLoaded ? children : <LoadingOverlay loadingPercentage={loadingPercentage} />;
+  return isAppLoaded ? children : <LoadingOverlay loadingPercentage={loadingPercentage} loadingText={loadingText} />;
 };
 
 export default LoaderProvider;
