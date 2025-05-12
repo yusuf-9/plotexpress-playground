@@ -9,6 +9,7 @@ import ModalFooter from "./components/modal-footer";
 import { TooltipProvider } from "@/common/components/ui/tooltip";
 import SectionWrapper from "./components/section-wrapper";
 import Chart from "../../chart";
+import ErrorBoundary from "@/common/components/error-boundary";
 
 // sections
 import ChartSelectSection from "./sections/chart-select";
@@ -48,7 +49,7 @@ export default function CreateChartModal(props: Props) {
     disableNextStep,
     chartSettings,
     handleChartSettingsChange,
-    setEditChartId
+    setEditChartId,
   } = useCreateChartFlow({ onClose });
 
   const { chartAPI, setChartPreviewRef } = useChartPreview();
@@ -59,17 +60,19 @@ export default function CreateChartModal(props: Props) {
 
     return (
       <div className="flex-grow flex flex-col w-full h-full">
-        <Chart
-          chart={{
-            i: "preview",
-            ...DEFAULT_GRID_PANEL_DIMENSIONS,
-            tracesConfig: completeTraces,
-            type: chartType!,
-            chartSettings: chartSettings,
-          }}
-          chartAPI={chartAPI}
-          setRef={setChartPreviewRef}
-        />
+        <ErrorBoundary>
+          <Chart
+            chart={{
+              i: "preview",
+              ...DEFAULT_GRID_PANEL_DIMENSIONS,
+              tracesConfig: completeTraces,
+              type: chartType!,
+              chartSettings: chartSettings,
+            }}
+            chartAPI={chartAPI}
+            setRef={setChartPreviewRef}
+          />
+        </ErrorBoundary>
       </div>
     );
   }, [chartAPI, chartSettings, chartType, completeTraces, currentStep, setChartPreviewRef]);
@@ -78,8 +81,8 @@ export default function CreateChartModal(props: Props) {
     <Dialog
       open={true}
       onOpenChange={() => {
-        setEditChartId('')
-        onClose()
+        setEditChartId("");
+        onClose();
       }}
     >
       <DialogContent className="!w-[90vw] !max-w-[1800px] h-[90vh] flex flex-col p-0 overflow-hidden gap-0">

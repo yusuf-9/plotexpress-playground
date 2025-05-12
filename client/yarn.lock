@@ -1239,24 +1239,24 @@ acorn@^8.14.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.1.tgz#721d5dc10f7d5b5609a891773d47731796935dfb"
   integrity sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==
 
-ag-charts-types@10.3.4:
-  version "10.3.4"
-  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-10.3.4.tgz#190196673db80c1ce20a0ef7a81a3b50ead8a8fc"
-  integrity sha512-MU+3gvKn1jEyLlMHS0Vu0nHmIQxiVJAnA6ftUatLZvV0c7hOWap4VWghqZ0cVZUJsCdMI59Iuq1u3xquKv4LOQ==
+ag-charts-types@10.3.7:
+  version "10.3.7"
+  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-10.3.7.tgz#54805e8ed499a6f6745ed1938c71a798306b2182"
+  integrity sha512-ja7eA27Ns0SfwvV89ORsZTqcsZ57rPYptlzrvzRLjoKXowR+Ft9stb3USLHJjpPwT45qtMyCmTdRTfis6auWnw==
 
-ag-grid-community@32.3.4:
-  version "32.3.4"
-  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-32.3.4.tgz#0c0c0ce9b95a2360f681382331aca352d06c6324"
-  integrity sha512-iYQYFapKkqtCml1BvIX/nyNO6SvZYe/Z/1hLa7/7Dpzj2uqABJZIPGgW/ZTOc+/YiM9JYJWMkD7c+5E23GzkAw==
+ag-grid-community@32.3.7:
+  version "32.3.7"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-32.3.7.tgz#904deeffd504a2555eebf44eee095f75be693ef5"
+  integrity sha512-36P/ex/itDEWMC0gESNR5J+lm3aeLquhgwXgM+AKGb/soLdvKv8Fc3BP/5n4r6a7qhsSFE/E1w37b26xbpHuPQ==
   dependencies:
-    ag-charts-types "10.3.4"
+    ag-charts-types "10.3.7"
 
 ag-grid-react@^32.3.0:
-  version "32.3.4"
-  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-32.3.4.tgz#ef169ec0b0f2229d98bb980d4b08513da205ba78"
-  integrity sha512-JuIum0etQnWUxWt4EbCXkLGa2lNLgFXNK0nR/rr2+WcOHZSIo1wXe5DPySnL725BK+yPqfB6XZmZcETpEDT+bQ==
+  version "32.3.7"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-32.3.7.tgz#fe9410c47fcf810a7d18e1549a927f9f8a877c1a"
+  integrity sha512-rKTy4WqfVB0l5l7poMJoqIpLLKe2zdIbRAFoM8PiBJmFrGSjyhhR4kXVvj/AQPKdejKZkcy8r6R8F1C8obG/dA==
   dependencies:
-    ag-grid-community "32.3.4"
+    ag-grid-community "32.3.7"
     prop-types "^15.8.1"
 
 ajv@^6.12.4:

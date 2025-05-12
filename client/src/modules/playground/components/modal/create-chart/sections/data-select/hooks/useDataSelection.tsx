@@ -110,7 +110,7 @@ export default function useDataSelection(props: Props) {
       editable: false,
       filter: false,
       resizable: true,
-    };
+    }
   }, []);
 
   const handleDataGridCellClick = useCallback(
