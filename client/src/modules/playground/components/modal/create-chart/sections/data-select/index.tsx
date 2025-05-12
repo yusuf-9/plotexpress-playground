@@ -48,7 +48,7 @@ const DataSelectSection = (props: Props) => {
         activeAxis={activeAxis}
         axisOptions={axisOptions}
         onAxisOptionClick={setActiveAxis}
-        traces={completeTraces}
+        traces={allTraces}
         uploadedFiles={uploadedFiles}
         selectedTraceIndex={selectedTraceIndex}
         onTraceEdit={setSelectedTraceIndex}

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 // constants
-import { DEFAULT_GRID_PANEL_DIMENSIONS } from "../constants";
+import { DEFAULT_GRID_PANEL_DIMENSIONS, LOCAL_STORAGE_KEYS } from "../constants";
 
 // types
 import { Chart, FileData, ParsedData, FinalChartConfig } from "../types";
@@ -58,8 +58,7 @@ const createPlaygroundStore = () => {
   return create<PlaygroundStore>(set => ({
     // workspace state
     workspace: {
-      name: "",
-      lastUpdated: "",
+      name: localStorage.getItem(LOCAL_STORAGE_KEYS.WORKSPACE_NAME) ?? ''
     },
     setWorkspace: (workspace: Workspace) => set({ workspace }),
 

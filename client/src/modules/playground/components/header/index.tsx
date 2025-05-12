@@ -25,10 +25,11 @@ export default function PlaygroundHeader() {
 
   const workspace = useStore(store => store.workspace!);
   const setWorkspace = useStore(store => store.setWorkspace);
+  const isSharedWorkspace = useStore(store => store.isSharedWorkspace);
 
   const { dataManager } = useDependencyInjector()
 
-  const [workspaceName, setWorkspaceName] = useLocalStorageState(LOCAL_STORAGE_KEYS.WORKSPACE_NAME, workspace.name);
+  const [workspaceName, setWorkspaceName] = useLocalStorageState(LOCAL_STORAGE_KEYS.WORKSPACE_NAME, workspace.name, isSharedWorkspace);
 
   const { setTheme } = useTheme();
 
