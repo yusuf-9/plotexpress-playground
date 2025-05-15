@@ -17,7 +17,7 @@ import { AxisTypes, Chart, BaseTraceConfig } from "@/modules/playground/types";
 import { AgGridReactProps } from "ag-grid-react";
 
 // utils
-import { getColorBgClass, getHexColorOfOpacity } from "@/modules/playground/utils/colors";
+import { getColorBgClass } from "@/modules/playground/utils/colors";
 
 type Props = {
   chartType: Chart["type"];
@@ -59,7 +59,7 @@ export default function useDataSelection(props: Props) {
     return uploadedFiles[selectedFileId]?.data ?? [];
   }, [selectedFileId, uploadedFiles]);
 
-  const dataGridColumnDefinitions: ColDef<any, any>[] = useMemo(() => {
+  const dataGridColumnDefinitions = useMemo(() => {
     const columnKeys = dataGridDataData.reduce((acc, dataObject) => {
       Object.keys(dataObject).forEach(key => {
         if (!acc.includes(key)) {
@@ -69,40 +69,34 @@ export default function useDataSelection(props: Props) {
       return acc;
     }, []);
 
-    return columnKeys.map((key: string) => {
-      const tracesOfColumn = allTraces.find(trace => {
-        return (
-          (trace.x?.fileId === selectedFileId && trace.x.column === key) ||
-          (trace.y?.fileId === selectedFileId && trace.y.column === key)
-        );
-      });
+    return columnKeys.map((key: string) => ({
+      field: key,
+      cellClass: () => {
+        if (key === hoveredColumn) return "cursor-pointer bg-primary/10";
 
-      return {
-        field: key,
-        cellClass: () => {
-          if (key === hoveredColumn) return "!bg-primary/10";
-        },
-        cellStyle: {
-          cursor: "pointer",
-          ...(Boolean(tracesOfColumn) && {
-            backgroundColor: getHexColorOfOpacity(tracesOfColumn!.settings.color, 0.2)
-          })
-        },
-        headerClass: () => {
-          if (key === hoveredColumn) return "bg-primary/10 hover:!bg-primary/10 cursor-pointer";
+        const tracesOfColumn = allTraces.find(trace => {
+          return (
+            (trace.x?.fileId === selectedFileId && trace.x.column === key) ||
+            (trace.y?.fileId === selectedFileId && trace.y.column === key)
+          );
+        });
+        if (tracesOfColumn) return `cursor-pointer ${getColorBgClass(tracesOfColumn.settings.color, 20)}`;
+        return "cursor-pointer";
+      },
+      headerClass: () => {
+        if (key === hoveredColumn) return "bg-primary/10 hover:!bg-primary/10 cursor-pointer";
 
-          const tracesOfColumn = allTraces.find(trace => {
-            return (
-              (trace.x?.fileId === selectedFileId && trace.x.column === key) ||
-              (trace.y?.fileId === selectedFileId && trace.y.column === key)
-            );
-          });
-          if (tracesOfColumn)
-            return `cursor-pointer hover:!bg-primary ${getColorBgClass(tracesOfColumn.settings.color, 20)}`;
-          return "cursor-pointer";
-        },
-      }
-    });
+        const tracesOfColumn = allTraces.find(trace => {
+          return (
+            (trace.x?.fileId === selectedFileId && trace.x.column === key) ||
+            (trace.y?.fileId === selectedFileId && trace.y.column === key)
+          );
+        });
+        if (tracesOfColumn)
+          return `cursor-pointer hover:!bg-primary ${getColorBgClass(tracesOfColumn.settings.color, 20)}`;
+        return "cursor-pointer";
+      },
+    }));
   }, [allTraces, dataGridDataData, hoveredColumn, selectedFileId]);
 
   const defaultDataGridColumnProps: ColDef<any, any> = useMemo(() => {
