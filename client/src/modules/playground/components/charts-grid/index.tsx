@@ -4,6 +4,7 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 // components
 import GridItem from "../grid-item";
 import Chart from "../chart";
+import ErrorBoundary from "@/common/components/error-boundary";
 
 // css
 import "react-resizable/css/styles.css";
@@ -17,7 +18,10 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function ChartsGrid() {
   const { charts, dataManager, handleEditChart, setChartRef, chartsRefs } = useCharts();
-  const { handleExportChartAsSVG, handleExportChartAsPNG } = useChartExports({ charts, chartsRefs: chartsRefs.current });
+  const { handleExportChartAsSVG, handleExportChartAsPNG } = useChartExports({
+    charts,
+    chartsRefs: chartsRefs.current,
+  });
 
   const gridItemsJSX = useMemo(() => {
     return charts.map(chart => (
@@ -28,11 +32,13 @@ export default function ChartsGrid() {
           onExportAsPNG={() => handleExportChartAsPNG(chart.i)}
           onExportAsSVG={() => handleExportChartAsSVG(chart.i)}
         >
-          <Chart
-            chart={chart}
-            setRef={setChartRef}
-            chartAPI={chartsRefs.current[chart.i]}
-          />
+          <ErrorBoundary>
+            <Chart
+              chart={chart}
+              setRef={setChartRef}
+              chartAPI={chartsRefs.current[chart.i]}
+            />
+          </ErrorBoundary>
         </GridItem>
       </div>
     ));

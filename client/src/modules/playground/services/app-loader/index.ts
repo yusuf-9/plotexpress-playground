@@ -36,20 +36,29 @@ export default class AppLoader {
    * Public function to handle loading the app
    * Checks if the workspace is shared or not, and loads the correct appState
    */
-  public async loadApp({ onProgress }: { onProgress: (percentage: number) => void }) {
+  public async loadApp({ onProgress, setLoadingText }: {
+    onProgress: (percentage: number) => void,
+    setLoadingText: (text: string) => void
+  }) {
     const searchParams = new URLSearchParams(window.location.search);
     const sharedWorkspaceId = searchParams.get(SHARED_WORKSPACE_QUERY_PARAM_KEY);
 
     const isSharedWorkspace = Boolean(sharedWorkspaceId && typeof sharedWorkspaceId === "string");
     if (isSharedWorkspace) {
-      await this.loadSharedWorkspace(sharedWorkspaceId as string, onProgress);
+      setLoadingText("Loading shared workspace")
+      await this.loadSharedWorkspace(sharedWorkspaceId as string, onProgress, setLoadingText);
       return;
     }
 
+    setLoadingText("Loading cached state")
     await this.loadCachedFilesAndCharts(onProgress);
   }
 
-  private async loadSharedWorkspace(workspaceId: string, onProgress: (percentage: number) => void) {
+  private async loadSharedWorkspace(
+    workspaceId: string,
+    onProgress: (percentage: number) => void,
+    setLoadingText: (text: string) => void
+  ) {
     /**
      * 1. Generates signed URLs for shared workspace files
      * 2. Fetches the file data of the shared workspace and loads it into the store
@@ -59,6 +68,7 @@ export default class AppLoader {
     try {
       onProgress(30);
 
+      setLoadingText("Preparing Signed URLs")
       // Get signed URLs
       const [dataFileSignedURL, configFileSignedURL] = await Promise.all([
         retryPromiseIfFails(() => getFileAccessLink(workspaceId + "/" + SHARED_WORKSPACE_FILE_NAMES.DATA_FILE)),
@@ -67,6 +77,7 @@ export default class AppLoader {
 
       onProgress(60);
 
+      setLoadingText("Fetching workspace state")
       // Fetch data using signed URLs
       const [dataFileResponse, configFileResponse] = await Promise.all([
         retryPromiseIfFails(() => axiosBase.get<{ [SHARED_WORKSPACE_FILE_DATA_KEY]: FileData }>(dataFileSignedURL)),
@@ -86,9 +97,12 @@ export default class AppLoader {
       const setWorkspace = this.storeRef.getState().setWorkspace;
       const setIsSharedWorkspace = this.storeRef.getState().setIsSharedWorkspace;
 
+      console.log({
+        name: JSON.parse(configFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY].workspaceName)
+      })
       setFiles(dataFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY]);
       setWorkspace({
-        name: configFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY].workspaceName,
+        name: JSON.parse(configFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY].workspaceName)
       });
       setCharts(configFileResponse.data[SHARED_WORKSPACE_FILE_DATA_KEY].charts);
 

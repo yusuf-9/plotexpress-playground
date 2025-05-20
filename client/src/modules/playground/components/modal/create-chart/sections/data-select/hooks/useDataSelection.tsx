@@ -104,7 +104,7 @@ export default function useDataSelection(props: Props) {
       editable: false,
       filter: false,
       resizable: true,
-    };
+    }
   }, []);
 
   const handleDataGridCellClick = useCallback(
@@ -118,6 +118,7 @@ export default function useDataSelection(props: Props) {
         },
         traceIndexToUse
       );
+      setActiveAxis(prev => prev === "x" ? "y" : "x")
     },
     [addOrUpdateTrace, activeAxis, selectedFileId, traceIndexToUse]
   );

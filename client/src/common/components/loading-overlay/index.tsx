@@ -2,10 +2,11 @@ import "./loader.scss";
 
 type Props = {
   loadingPercentage?: number;
+  loadingText?: string;
 };
 
 function LoadingOverlay(props: Props) {
-  const { loadingPercentage } = props;
+  const { loadingPercentage, loadingText } = props;
 
   return (
     <div className="absolute left-0 top-0 w-screen h-screen flex justify-center items-center bg-primary">
@@ -25,6 +26,11 @@ function LoadingOverlay(props: Props) {
               style={{ width: `${loadingPercentage}%` }}
             ></div>
           </div>
+        )}
+        {loadingText && (
+          <h6 className="text-center text-white font-semibold text-xl">
+            {loadingText}...
+          </h6>
         )}
       </div>
     </div>
