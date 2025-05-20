@@ -6,8 +6,8 @@ A lightweight, open-source data visualization playground for visualizing data fr
 
 ## Key Features
 
-- **Supports multiple data formats**: CSV, XLSX, JSON, remote file links, Google Docs, and more.
-- **Data Visualization**: Supports a rich set of chart types.
+- **Supports multiple data formats**: CSV, XLSX, JSON files.
+- **Data Visualization**: Supports a rich set of chart types. More on the way!
 - **Customizable Charts**: Modify chart properties with ease.
 - **Data Persistence**: Uses IndexedDB for storing uploaded files.
 - **Export Options**: Save charts as images or export them as documents with headings and descriptions.
