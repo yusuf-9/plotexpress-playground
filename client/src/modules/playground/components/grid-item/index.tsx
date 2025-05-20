@@ -18,7 +18,7 @@ type Props = PropsWithChildren & {
 const GridItem = (props: Props) => {
   const { children, onDelete, onEdit, onExportAsPNG, onExportAsSVG } = props;
   return (
-    <div className="h-full w-full relative bg-background rounded-lg pt-3 p-4 pr-2 flex flex-col shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="h-full w-full relative bg-background border border-secondary rounded-lg pt-3 p-4 pr-2 flex flex-col shadow-md hover:shadow-lg transition-shadow duration-300">
       <div className="absolute top-5 right-5 z-10 flex items-center">
         <Move className="mr-2 h-4 w-4 cursor-grab draggable-region" />
         <DropdownMenu>
