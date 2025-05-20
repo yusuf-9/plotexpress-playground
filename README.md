@@ -10,7 +10,7 @@ A lightweight, open-source data visualization playground for visualizing data fr
 - **Data Visualization**: Supports a rich set of chart types. More on the way!
 - **Customizable Charts**: Modify chart properties with ease.
 - **Data Persistence**: Uses IndexedDB for storing uploaded files.
-- **Export Options**: Save charts as images or export them as documents with headings and descriptions.
+- **Export Options**: Save charts as images in either PNG or SVG format.
 - **Dark/Light Mode**: Accessible theme options.
 - **Serverless Backend**: Utilizes Cloudflare Workers for lightweight backend operations.
 
